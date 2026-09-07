@@ -38,7 +38,7 @@
             <div class="text-center mb-6">
                 <div class="w-12 h-12 bg-petroleum text-white rounded-lg mx-auto flex items-center justify-center font-bold text-lg mb-3 shadow-md">AL</div>
                 <h2 class="text-2xl font-black text-slate-900">ALISOFT v3.5 Pro</h2>
-                <p class="text-xs text-slate-500 mt-1">Plataforma Global Integrada MEAL & Conexión PostgreSQL</p>
+                <p class="text-xs text-slate-500 mt-1">Plataforma Global Integrada MEAL & Servidor Render</p>
             </div>
             <form onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
@@ -50,7 +50,7 @@
                     <input type="password" id="login-pass" required placeholder="********" class="w-full text-sm border border-slate-300 rounded-md p-2.5 outline-none focus:border-blue-500 bg-white">
                 </div>
                 <button type="submit" class="w-full bg-petroleum hover:bg-blue-900 text-white font-semibold py-2.5 rounded-md text-sm transition-colors shadow-sm mt-2">
-                    Conectar al Servidor PostgreSQL
+                    Conectar al Servidor en la Nube
                 </button>
             </form>
             <div class="text-center mt-6">
@@ -145,8 +145,8 @@
     <div class="flex-1 flex flex-col h-screen relative w-full overflow-hidden">
         <header class="bg-white border-b border-slate-200 px-6 py-3 flex justify-between items-center z-10 shadow-sm no-print">
             <div>
-                <h1 class="text-xl font-bold text-slate-900 tracking-tight">Plataforma Global ALISOFT v3.5 Pro (Producción PostgreSQL)</h1>
-                <p class="text-xs text-slate-500 mt-0.5">Sistema Integrado MEAL & Conexión Activa a Servidor Remoto</p>
+                <h1 class="text-xl font-bold text-slate-900 tracking-tight">Plataforma Global ALISOFT v3.5 Pro (Servidor Cloud Activo)</h1>
+                <p class="text-xs text-slate-500 mt-0.5">Sistema Integrado MEAL & Sincronización Automática en la Nube</p>
             </div>
             <div class="flex items-center space-x-4">
                 <button id="btn-global-chatia" onclick="abrirChatIAGlobal()" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-3.5 py-2 rounded-lg text-xs font-bold transition shadow-sm flex items-center space-x-1.5">
@@ -158,7 +158,7 @@
                     <div id="user-avatar-badge" class="w-8 h-8 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center text-blue-700 font-bold text-sm">--</div>
                     <div class="hidden md:block text-left">
                         <span id="header-username" class="text-xs font-bold text-slate-800 block">Conectando...</span>
-                        <span id="header-role" class="text-[10px] text-blue-600 block uppercase font-semibold">PostgreSQL Client</span>
+                        <span id="header-role" class="text-[10px] text-blue-600 block uppercase font-semibold">Cloud Client</span>
                     </div>
                 </div>
             </div>
@@ -173,11 +173,11 @@
                     <div class="flex items-center space-x-3">
                         <div class="w-8 h-8 rounded-full bg-amber-500 text-slate-900 flex items-center justify-center font-bold text-xs">IA</div>
                         <div>
-                            <span class="text-[10px] uppercase font-bold text-amber-400">Diagnóstico Cognitivo ALISOFTIA (PostgreSQL Linked)</span>
-                            <p class="text-xs">Sincronizado con consultas remotas del servidor.</p>
+                            <span class="text-[10px] uppercase font-bold text-amber-400">Diagnóstico Cognitivo ALISOFTIA (Servidor Sincronizado)</span>
+                            <p class="text-xs">Sincronizado con consultas remotas del servidor en la nube.</p>
                         </div>
                     </div>
-                    <button onclick="abrirChatIAConContexto('Dashboard General', 'Análisis general del portafolio activo desde servidor PostgreSQL.')" class="bg-amber-500 hover:bg-amber-400 text-slate-900 px-3 py-1.5 rounded text-xs font-bold">Analizar con ChatIA →</button>
+                    <button onclick="abrirChatIAConContexto('Dashboard General', 'Análisis general del portafolio activo desde servidor.')" class="bg-amber-500 hover:bg-amber-400 text-slate-900 px-3 py-1.5 rounded text-xs font-bold">Analizar con ChatIA →</button>
                 </div>
 
                 <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
@@ -200,7 +200,7 @@
                 </section>
                 <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
                     <div class="bg-white p-5 rounded-lg shadow-sm border flex flex-col">
-                        <h4 class="font-bold text-sm text-slate-800 uppercase tracking-wide mb-4">Ejecución Financiera Global (PostgreSQL)</h4>
+                        <h4 class="font-bold text-sm text-slate-800 uppercase tracking-wide mb-4">Ejecución Financiera Global (Servidor)</h4>
                         <div class="flex-1 relative" style="min-height: 250px;"><canvas id="chartFinanciero"></canvas></div>
                     </div>
                     <div class="bg-white p-5 rounded-lg shadow-sm border flex flex-col">
@@ -214,7 +214,7 @@
             <main id="app-view-tecnico" class="flex-1 overflow-y-auto p-6 bg-slate-100 hidden flex flex-col">
                 <div class="mb-4">
                     <h2 class="text-xl font-bold text-slate-900">Módulo de Actualización y Registro en Terreno</h2>
-                    <p class="text-xs text-slate-500 mt-1">Conectado a tablas remotas para inserción directa en PostgreSQL.</p>
+                    <p class="text-xs text-slate-500 mt-1">Conectado a tablas remotas para inserción directa en el servidor.</p>
                 </div>
                 <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
                     <div>
@@ -254,13 +254,13 @@
                     <form onsubmit="guardarRegistroTecnico(event)" class="space-y-4">
                         <div id="tec-campos-dinamicos" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
                         <div class="flex justify-end pt-3 border-t">
-                            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded text-xs transition">Registrar en PostgreSQL</button>
+                            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded text-xs transition">Registrar en el Servidor</button>
                         </div>
                     </form>
                 </div>
 
                 <div class="bg-white rounded-xl shadow-sm border overflow-hidden flex-1 flex flex-col">
-                    <div class="p-4 bg-slate-50 border-b"><h3 class="font-bold text-xs text-slate-700 uppercase">Historial Remoto (PostgreSQL)</h3></div>
+                    <div class="p-4 bg-slate-50 border-b"><h3 class="font-bold text-xs text-slate-700 uppercase">Historial Remoto (Servidor Cloud)</h3></div>
                     <div class="overflow-x-auto flex-1">
                         <table class="w-full text-left text-xs text-slate-600">
                             <thead class="bg-slate-100 text-[10px] uppercase font-bold text-slate-500 border-b">
@@ -279,7 +279,7 @@
                 <div class="flex justify-between items-center mb-6">
                     <div>
                         <h2 class="text-xl font-bold text-slate-900">Directorio Global de Instancias Regionales</h2>
-                        <p class="text-xs text-slate-500 mt-1">Conectado a la tabla <code class="bg-slate-200 px-1 py-0.5 rounded">instancias_regionales</code> en PostgreSQL.</p>
+                        <p class="text-xs text-slate-500 mt-1">Conectado a la base de datos centralizada en el servidor.</p>
                     </div>
                     <button onclick="abrirModalCrearInstancia()" class="bg-petroleum hover:bg-blue-900 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm flex items-center space-x-1">
                         <span>+ Nueva Instancia</span>
@@ -292,7 +292,7 @@
             <main id="app-view-proyectos" class="flex-1 overflow-y-auto p-6 bg-slate-100 hidden flex flex-col">
                 <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                     <div>
-                        <h2 class="text-xl font-bold text-slate-900">Portafolio Global de Proyectos MEAL (PostgreSQL)</h2>
+                        <h2 class="text-xl font-bold text-slate-900">Portafolio Global de Proyectos MEAL (Servidor Cloud)</h2>
                         <p class="text-xs text-slate-500 mt-1">Administración de proyectos activos sincronizados en el servidor.</p>
                     </div>
                     <div class="flex items-center space-x-2 bg-white p-2 rounded-xl border shadow-sm">
@@ -310,7 +310,7 @@
             <main id="app-view-linea-base" class="flex-1 overflow-y-auto p-6 bg-slate-100 hidden flex flex-col">
                 <div class="flex justify-between items-center mb-4">
                     <h2 class="text-xl font-bold text-slate-900">Línea Base & Mapa Cartográfico Global (PostGIS)</h2>
-                    <button onclick="abrirChatIAConContexto('Mapa Interactivo GIS', 'Análisis geoespacial PostgreSQL/PostGIS.')" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-3.5 py-2 rounded-lg text-xs font-bold">Consultar IA Territorial</button>
+                    <button onclick="abrirChatIAConContexto('Mapa Interactivo GIS', 'Análisis geoespacial en el servidor.')" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-3.5 py-2 rounded-lg text-xs font-bold">Consultar IA Territorial</button>
                 </div>
                 <div class="bg-white rounded-xl shadow-sm border p-4 flex-1 flex flex-col">
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 flex-1" style="min-height: 450px;">
@@ -318,7 +318,7 @@
                             <div id="leaflet-map" class="absolute inset-0 z-10 w-full h-full"></div>
                         </div>
                         <div id="gis-ficha-lateral" class="bg-slate-50 rounded-xl border p-4 flex flex-col justify-between">
-                            <div class="text-center py-16 text-slate-400"><p class="text-sm font-semibold">Seleccione un PIN GPS sincronizado vía PostGIS</p></div>
+                            <div class="text-center py-16 text-slate-400"><p class="text-sm font-semibold">Seleccione un PIN GPS sincronizado vía servidor</p></div>
                         </div>
                     </div>
                 </div>
@@ -328,14 +328,14 @@
             <main id="app-view-reportes" class="flex-1 overflow-y-auto p-6 bg-slate-100 hidden flex flex-col">
                 <div class="mb-6">
                     <h2 class="text-xl font-bold text-slate-900">Kit de Reportes Ejecutivos Institucionales</h2>
-                    <p class="text-xs text-slate-500 mt-1">Informes dinámicos consultados directamente en vistas SQL del servidor.</p>
+                    <p class="text-xs text-slate-500 mt-1">Informes dinámicos consultados directamente en vistas del servidor.</p>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     <div class="bg-white p-5 rounded-xl shadow-sm border flex flex-col justify-between">
                         <div>
                             <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-bold uppercase">Gerencial</span>
                             <h3 class="font-bold text-base mt-2">Ejecución Financiera de Portafolio</h3>
-                            <p class="text-xs text-slate-500 mt-1">Consulta directa a tabla <code class="bg-slate-100 px-1 rounded">vw_ejecucion_financiera</code>.</p>
+                            <p class="text-xs text-slate-500 mt-1">Consulta directa a vista <code class="bg-slate-100 px-1 rounded">vw_ejecucion_financiera</code>.</p>
                         </div>
                         <button onclick="generarReporteKit('Financiero')" class="mt-4 bg-slate-900 hover:bg-slate-800 text-white py-2 rounded text-xs font-bold">Visualizar Reporte</button>
                     </div>
@@ -343,7 +343,7 @@
                         <div>
                             <span class="text-[10px] bg-amber-50 text-amber-700 px-2 py-0.5 rounded font-bold uppercase">ALISOFTIA Pro</span>
                             <h3 class="font-bold text-base mt-2">Trazabilidad y Alertas Críticas</h3>
-                            <p class="text-xs text-slate-500 mt-1">Consulta directa a tabla <code class="bg-slate-100 px-1 rounded">vw_alertas_trazabilidad</code>.</p>
+                            <p class="text-xs text-slate-500 mt-1">Consulta directa a vista <code class="bg-slate-100 px-1 rounded">vw_alertas_trazabilidad</code>.</p>
                         </div>
                         <button onclick="generarReporteKit('Trazabilidad')" class="mt-4 bg-slate-900 hover:bg-slate-800 text-white py-2 rounded text-xs font-bold">Visualizar Reporte</button>
                     </div>
@@ -351,7 +351,7 @@
                         <div>
                             <span class="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-bold uppercase">CARI+ / SAN</span>
                             <h3 class="font-bold text-base mt-2">Cumplimiento de Indicadores</h3>
-                            <p class="text-xs text-slate-500 mt-1">Consulta directa a tabla <code class="bg-slate-100 px-1 rounded">vw_indicadores_cari</code>.</p>
+                            <p class="text-xs text-slate-500 mt-1">Consulta directa a vista <code class="bg-slate-100 px-1 rounded">vw_indicadores_cari</code>.</p>
                         </div>
                         <button onclick="generarReporteKit('Indicadores')" class="mt-4 bg-slate-900 hover:bg-slate-800 text-white py-2 rounded text-xs font-bold">Visualizar Reporte</button>
                     </div>
@@ -359,7 +359,7 @@
                         <div>
                             <span class="text-[10px] bg-purple-50 text-purple-700 px-2 py-0.5 rounded font-bold uppercase">Terreno</span>
                             <h3 class="font-bold text-base mt-2">Validación de Cargas de Técnicos</h3>
-                            <p class="text-xs text-slate-500 mt-1">Consulta directa a tabla <code class="bg-slate-100 px-1 rounded">vw_movimientos_tecnicos</code>.</p>
+                            <p class="text-xs text-slate-500 mt-1">Consulta directa a vista <code class="bg-slate-100 px-1 rounded">vw_movimientos_tecnicos</code>.</p>
                         </div>
                         <button onclick="generarReporteKit('Tecnicos')" class="mt-4 bg-slate-900 hover:bg-slate-800 text-white py-2 rounded text-xs font-bold">Visualizar Reporte</button>
                     </div>
@@ -367,7 +367,7 @@
                         <div>
                             <span class="text-[10px] bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-bold uppercase">GIS Global</span>
                             <h3 class="font-bold text-base mt-2">Resumen Geoespacial de Línea Base</h3>
-                            <p class="text-xs text-slate-500 mt-1">Consulta directa a esquema PostGIS.</p>
+                            <p class="text-xs text-slate-500 mt-1">Consulta directa al esquema GIS.</p>
                         </div>
                         <button onclick="generarReporteKit('GIS')" class="mt-4 bg-slate-900 hover:bg-slate-800 text-white py-2 rounded text-xs font-bold">Visualizar Reporte</button>
                     </div>
@@ -411,8 +411,8 @@
             <main id="app-view-usuarios" class="flex-1 overflow-y-auto p-6 bg-slate-100 hidden flex flex-col">
                 <div class="flex justify-between items-center mb-4">
                     <div>
-                        <h2 class="text-xl font-bold text-slate-900">Administración de Usuarios (PostgreSQL)</h2>
-                        <p class="text-xs text-slate-500 mt-0.5">Gestión de credenciales y perfiles conectados a la base de datos.</p>
+                        <h2 class="text-xl font-bold text-slate-900">Administración de Usuarios (Servidor Cloud)</h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Gestión de credenciales y perfiles conectados al servidor.</p>
                     </div>
                     <button onclick="abrirModalCrearUsuario()" class="bg-petroleum hover:bg-blue-900 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm flex items-center space-x-1">
                         <span>+ Nuevo Usuario</span>
@@ -430,7 +430,7 @@
 
             <!-- VISTA: BITÁCORA -->
             <main id="app-view-bitacora" class="flex-1 overflow-y-auto p-6 bg-slate-100 hidden flex flex-col">
-                <h2 class="text-xl font-bold text-slate-900 mb-4">Bitácora de Auditoría Global (PostgreSQL)</h2>
+                <h2 class="text-xl font-bold text-slate-900 mb-4">Bitácora de Auditoría Global (Servidor Cloud)</h2>
                 <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
                     <table class="w-full text-left text-sm text-slate-600">
                         <thead class="bg-slate-50 text-xs uppercase font-semibold text-slate-500 border-b">
@@ -447,7 +447,7 @@
     <div id="modal-crear-usuario" class="hidden fixed inset-0 bg-slate-900 bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 border">
             <div class="flex justify-between items-center border-b pb-3 mb-4">
-                <h3 class="font-bold text-slate-900 text-sm">Registrar Nuevo Usuario en PostgreSQL</h3>
+                <h3 class="font-bold text-slate-900 text-sm">Registrar Nuevo Usuario en el Servidor</h3>
                 <button onclick="cerrarModalCrearUsuario()" class="text-slate-400 hover:text-slate-700 font-bold text-lg">&times;</button>
             </div>
             <form onsubmit="guardarNuevoUsuario(event)" class="space-y-4 text-xs">
@@ -483,11 +483,11 @@
         </div>
     </div>
 
-    <!-- MODAL: CREAR/MODIFICAR NUEVO PROYECTO (Con Estructura Jerárquica MEAL) -->
+    <!-- MODAL: CREAR/MODIFICAR NUEVO PROYECTO -->
     <div id="modal-crear-proyecto" class="hidden fixed inset-0 bg-slate-900 bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
         <div class="bg-white rounded-xl shadow-2xl max-w-3xl w-full p-6 border max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3 mb-4">
-                <h3 class="font-bold text-slate-900 text-sm" id="titulo-modal-proyecto">Registrar Nuevo Proyecto MEAL y Estructura Lógica (PostgreSQL)</h3>
+                <h3 class="font-bold text-slate-900 text-sm" id="titulo-modal-proyecto">Registrar Nuevo Proyecto MEAL y Estructura Lógica (Servidor)</h3>
                 <button onclick="cerrarModalCrearProyecto()" class="text-slate-400 hover:text-slate-700 font-bold text-lg">&times;</button>
             </div>
             <form onsubmit="guardarNuevoProyecto(event)" class="space-y-4 text-xs">
@@ -534,7 +534,7 @@
                 </div>
 
                 <div class="flex justify-end pt-3 border-t">
-                    <button type="submit" class="bg-petroleum hover:bg-blue-900 text-white px-5 py-2.5 rounded text-xs font-semibold">Guardar Proyecto y Estructura</button>
+                    <button type="submit" class="bg-petroleum hover:bg-blue-900 text-white px-5 py-2.5 rounded text-xs font-semibold">Guardar Proyecto en el Servidor</button>
                 </div>
             </form>
         </div>
@@ -692,7 +692,7 @@
     <div id="modal-crear-instancia" class="hidden fixed inset-0 bg-slate-900 bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
         <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 border max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3 mb-4">
-                <h3 class="font-bold text-slate-900 text-sm">Registrar Nueva Instancia Regional (PostgreSQL)</h3>
+                <h3 class="font-bold text-slate-900 text-sm">Registrar Nueva Instancia Regional (Servidor)</h3>
                 <button onclick="cerrarModalCrearInstancia()" class="text-slate-400 hover:text-slate-700 font-bold text-lg">&times;</button>
             </div>
             <form onsubmit="guardarNuevaInstancia(event)" class="space-y-4 text-xs">
@@ -730,7 +730,7 @@
                         <input type="text" placeholder="MXN ($)" class="border rounded p-1.5 bg-white divisa-extra">
                     </div>
                 </div>
-                <div class="flex justify-end pt-3 border-t"><button type="submit" class="bg-petroleum hover:bg-blue-900 text-white px-5 py-2.5 rounded text-xs font-semibold">Guardar en PostgreSQL</button></div>
+                <div class="flex justify-end pt-3 border-t"><button type="submit" class="bg-petroleum hover:bg-blue-900 text-white px-5 py-2.5 rounded text-xs font-semibold">Guardar en el Servidor</button></div>
             </form>
         </div>
     </div>
@@ -742,7 +742,7 @@
                 <div class="flex items-center space-x-2">
                     <div class="w-8 h-8 rounded-full bg-amber-500 text-slate-900 flex items-center justify-center font-bold text-xs">IA</div>
                     <div>
-                        <h3 class="font-bold text-sm">ChatIA Pro — Conectado a PostgreSQL</h3>
+                        <h3 class="font-bold text-sm">ChatIA Pro — Conectado al Servidor</h3>
                         <p id="chatia-subtitle" class="text-[10px] text-slate-400">Motor analítico remoto</p>
                     </div>
                 </div>
@@ -756,7 +756,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE LÓGICA Y CONEXIÓN A POSTGRESQL CON PERSISTENCIA LOCALSTORAGE -->
+    <!-- SCRIPT DE LÓGICA CON CONEXIÓN ASÍNCRONA AL SERVIDOR -->
     <script>
         let currentUser = null;
         let leafletMap = null;
@@ -764,21 +764,33 @@
         let objetivosEnCreacion = []; 
         let proyectoEditandoIndex = null; 
 
-        // Carga inicial desde localStorage para garantizar persistencia local en el navegador
-        let dbInstancias = JSON.parse(localStorage.getItem('alisoft_instancias')) || [];
-        let dbUsuarios = JSON.parse(localStorage.getItem('alisoft_usuarios')) || [
-            { nombre: "J. Raul Martinez M.", perfil: "Master", instancia: "Todos" }
-        ];
-        let dbProyectos = JSON.parse(localStorage.getItem('alisoft_proyectos')) || [];
-        let dbMovimientosTecnicos = JSON.parse(localStorage.getItem('alisoft_movimientos')) || [];
-        let dbBitacora = JSON.parse(localStorage.getItem('alisoft_bitacora')) || [];
+        let dbInstancias = [];
+        let dbUsuarios = [];
+        let dbProyectos = [];
+        let dbMovimientosTecnicos = [];
+        let dbBitacora = [];
 
-        function guardarEnLocalStorage() {
-            localStorage.setItem('alisoft_instancias', JSON.stringify(dbInstancias));
-            localStorage.setItem('alisoft_usuarios', JSON.stringify(dbUsuarios));
-            localStorage.setItem('alisoft_proyectos', JSON.stringify(dbProyectos));
-            localStorage.setItem('alisoft_movimientos', JSON.stringify(dbMovimientosTecnicos));
-            localStorage.setItem('alisoft_bitacora', JSON.stringify(dbBitacora));
+        async function sincronizarDatosServidor() {
+            try {
+                const resInst = await fetch('/api/instancias');
+                dbInstancias = await resInst.json();
+
+                const resProj = await fetch('/api/proyectos');
+                dbProyectos = await resProj.json();
+
+                const resUsr = await fetch('/api/usuarios');
+                dbUsuarios = await resUsr.json();
+
+                const resMov = await fetch('/api/movimientos');
+                dbMovimientosTecnicos = await resMov.json();
+
+                const resBit = await fetch('/api/bitacora');
+                dbBitacora = await resBit.json();
+
+                renderizarEstadisticasDashboard();
+            } catch (error) {
+                console.error("Error al sincronizar con el servidor:", error);
+            }
         }
 
         async function handleLogin(event) {
@@ -793,18 +805,12 @@
             }
 
             document.getElementById('header-username').innerText = currentUser.nombre;
-            document.getElementById('header-role').innerText = `${currentUser.perfil} • PostgreSQL Connected`;
+            document.getElementById('header-role').innerText = `${currentUser.perfil} • Cloud Connected`;
             document.getElementById('user-avatar-badge').innerText = currentUser.nombre.substring(0, 2).toUpperCase();
             document.getElementById('login-modal').classList.add('hidden');
             
-            await sincronizarDatosPostgreSQL();
+            await sincronizarDatosServidor();
             cambiarVista('dashboard');
-        }
-
-        async function sincronizarDatosPostgreSQL() {
-            dbBitacora.unshift({ usuario: currentUser.nombre, entrada: new Date().toLocaleTimeString(), transacciones: "Conexión exitosa establecida con PostgreSQL Server." });
-            guardarEnLocalStorage();
-            renderizarEstadisticasDashboard();
         }
 
         function renderizarEstadisticasDashboard() {
@@ -843,13 +849,13 @@
                     <div class="flex items-center space-x-2">
                         <div class="w-7 h-7 bg-petroleum text-white rounded flex items-center justify-center font-bold text-xs">AL</div>
                         <div>
-                            <h2 class="text-sm font-black text-slate-900">ALISOFT v3.5 Pro — Reporte Remoto PostgreSQL (Moneda: Q.)</h2>
+                            <h2 class="text-sm font-black text-slate-900">ALISOFT v3.5 Pro — Reporte Remoto Servidor (Moneda: Q.)</h2>
                             <p class="text-slate-500 text-[10px]">Vista SQL: vw_${tipo.toLowerCase()}</p>
                         </div>
                     </div>
                     <div class="text-right text-[10px] text-slate-500">Fecha: ${fechaActual}</div>
                 </div>
-                <p class="text-xs text-slate-700">Registros actuales consultados en la base de datos PostgreSQL expresados en Quetzales (Q.).</p>
+                <p class="text-xs text-slate-700">Registros actuales consultados en la base de datos del servidor expresados en Quetzales (Q.).</p>
             `;
             visor.classList.remove('hidden');
         }
@@ -890,7 +896,7 @@
 
         function cerrarModalCrearUsuario() { document.getElementById('modal-crear-usuario').classList.add('hidden'); }
         
-        function guardarNuevoUsuario(e) {
+        async function guardarNuevoUsuario(e) {
             e.preventDefault();
             const perfil = document.getElementById('usr-perfil').value;
             const instanciaAsignada = (perfil === 'Master' || perfil === 'Secretario Ejecutivo' || perfil === 'Secretario General') ? 'Todos' : document.getElementById('usr-instancia').value;
@@ -900,11 +906,19 @@
                 perfil: perfil,
                 instancia: instanciaAsignada
             };
-            dbUsuarios.push(nuevoUsr);
-            guardarEnLocalStorage();
-            cerrarModalCrearUsuario();
-            renderUsuarios();
-            alert("¡Usuario registrado con éxito en PostgreSQL!");
+
+            const response = await fetch('/api/usuarios', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(nuevoUsr)
+            });
+
+            if(response.ok) {
+                alert("¡Usuario registrado con éxito en el servidor!");
+                cerrarModalCrearUsuario();
+                await sincronizarDatosServidor();
+                renderUsuarios();
+            }
         }
 
         function renderUsuarios() {
@@ -926,7 +940,7 @@
         function abrirModalCrearProyecto() {
             proyectoEditandoIndex = null;
             objetivosEnCreacion = [];
-            document.getElementById('titulo-modal-proyecto').innerText = "Registrar Nuevo Proyecto MEAL y Estructura Lógica (PostgreSQL)";
+            document.getElementById('titulo-modal-proyecto').innerText = "Registrar Nuevo Proyecto MEAL y Estructura Lógica (Servidor)";
             document.getElementById('proj-nombre').value = "";
             document.getElementById('proj-tematica').value = "";
             document.getElementById('proj-instancia').value = "";
@@ -936,7 +950,7 @@
             document.getElementById('modal-crear-proyecto').classList.remove('hidden');
         }
 
-        function actualizarSelectModificarproyecto() {
+        function actualizarSelectModificarProyecto() {
             const sel = document.getElementById('select-modificar-proyecto');
             if(!sel) return;
             sel.innerHTML = '<option value="" disabled selected>-- Seleccionar proyecto a modificar --</option>';
@@ -1130,7 +1144,7 @@
             `).join('');
         }
 
-        function guardarNuevoProyecto(e) {
+        async function guardarNuevoProyecto(e) {
             e.preventDefault();
             if(objetivosEnCreacion.length === 0) {
                 alert("Debe agregar al menos un objetivo específico y su estructura lógica.");
@@ -1145,25 +1159,34 @@
                 objetivosEspecificos: [...objetivosEnCreacion]
             };
 
+            let response;
             if(proyectoEditandoIndex !== null) {
-                dbProyectos[proyectoEditandoIndex] = datosProyecto;
-                alert("¡Proyecto modificado y actualizado con éxito en PostgreSQL!");
+                response = await fetch(`/api/proyectos/${proyectoEditandoIndex}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datosProyecto)
+                });
             } else {
-                dbProyectos.push(datosProyecto);
-                alert("¡Proyecto y su estructura jerárquica registrados con éxito en PostgreSQL!");
+                response = await fetch('/api/proyectos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datosProyecto)
+                });
             }
 
-            guardarEnLocalStorage();
-            cerrarModalCrearProyecto();
-            renderProyectos();
-            actualizarSelectModificarproyecto();
-            renderizarEstadisticasDashboard();
+            if(response.ok) {
+                alert("¡Proyecto guardado con éxito en el servidor!");
+                cerrarModalCrearProyecto();
+                await sincronizarDatosServidor();
+                renderProyectos();
+                actualizarSelectModificarProyecto();
+            }
         }
 
         function renderProyectos() {
             const container = document.getElementById('grid-proyectos');
             if(dbProyectos.length === 0) {
-                container.innerHTML = `<div class="col-span-full bg-white p-8 rounded-xl border text-center text-slate-400">Sin proyectos sincronizados desde la base de datos PostgreSQL. Haga clic en "+ Nuevo Proyecto" para registrar uno.</div>`;
+                container.innerHTML = `<div class="col-span-full bg-white p-8 rounded-xl border text-center text-slate-400">Sin proyectos sincronizados desde el servidor. Haga clic en "+ Nuevo Proyecto" para registrar uno.</div>`;
                 return;
             }
             container.innerHTML = dbProyectos.map(p => `
@@ -1222,17 +1245,25 @@
                 monedaOficial: document.getElementById('inst-moneda-oficial').value,
                 monedasExtra: extras
             };
-            dbInstancias.push(nuevaInst);
-            guardarEnLocalStorage();
-            cerrarModalCrearInstancia();
-            renderInstancias();
-            alert("¡Instancia guardada exitosamente en PostgreSQL!");
+
+            const response = await fetch('/api/instancias', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(nuevaInst)
+            });
+
+            if(response.ok) {
+                alert("¡Instancia guardada exitosamente en el servidor!");
+                cerrarModalCrearInstancia();
+                await sincronizarDatosServidor();
+                renderInstancias();
+            }
         }
 
         function renderInstancias() {
             const container = document.getElementById('grid-instancias');
             if(dbInstancias.length === 0) {
-                container.innerHTML = `<div class="col-span-full bg-white p-8 rounded-xl border text-center text-slate-400">Sin registros en la tabla <code class="bg-slate-100 px-1 rounded">instancias_regionales</code> de PostgreSQL.</div>`;
+                container.innerHTML = `<div class="col-span-full bg-white p-8 rounded-xl border text-center text-slate-400">Sin registros en la tabla <code class="bg-slate-100 px-1 rounded">instancias_regionales</code> del servidor.</div>`;
                 return;
             }
             container.innerHTML = dbInstancias.map(i => `
@@ -1251,8 +1282,8 @@
         }
 
         const datosCascada = {
-            "Comp1": { indicadores: { "Ind1": { nombre: "Indicador SAN Base PostgreSQL", actividades: ["Registro Terreno 1"] } } },
-            "Comp2": { indicadores: { "Ind2": { nombre: "Indicador GIRD Base PostgreSQL", actividades: ["Registro Terreno 2"] } } }
+            "Comp1": { indicadores: { "Ind1": { nombre: "Indicador SAN Base Servidor", actividades: ["Registro Terreno 1"] } } },
+            "Comp2": { indicadores: { "Ind2": { nombre: "Indicador GIRD Base Servidor", actividades: ["Registro Terreno 2"] } } }
         };
 
         function cargarIndicadoresTecnico() {
@@ -1306,13 +1337,21 @@
                 fecha: new Date().toISOString().split('T')[0],
                 actividad: document.getElementById('tec-sel-actividad').value,
                 accion: document.getElementById('tec-sel-accion').value,
-                detalle: `Registrado por ${currentUser.nombre} en PostgreSQL`,
+                detalle: `Registrado por ${currentUser.nombre} en el servidor`,
                 doc: "comprobante.pdf"
             };
-            dbMovimientosTecnicos.unshift(nuevoReg);
-            guardarEnLocalStorage();
-            alert("¡Movimiento registrado con éxito en PostgreSQL!");
-            renderGridTecnico();
+
+            const response = await fetch('/api/movimientos', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(nuevoReg)
+            });
+
+            if(response.ok) {
+                alert("¡Movimiento registrado con éxito en el servidor!");
+                await sincronizarDatosServidor();
+                renderGridTecnico();
+            }
         }
 
         function renderGridTecnico() {
@@ -1336,14 +1375,12 @@
                 leafletMap.invalidateSize();
             }
 
-            // Limpiar marcadores previos para evitar duplicados
             leafletMap.eachLayer(layer => {
                 if (layer instanceof L.Marker) {
                     leafletMap.removeLayer(layer);
                 }
             });
 
-            // Localizar y agregar pines GPS de las instancias registradas
             dbInstancias.forEach(inst => {
                 if(inst.gps) {
                     const partes = inst.gps.split(',').map(c => parseFloat(c.trim()));
@@ -1357,7 +1394,7 @@
 
         function inicializarModuloAlisoftia() {
             const sel = document.getElementById('ai-selector-proyecto');
-            sel.innerHTML = '<option value="" disabled selected>-- Elija Proyecto de la Base de Datos --</option>';
+            sel.innerHTML = '<option value="" disabled selected>-- Elija Proyecto del Servidor --</option>';
             dbProyectos.forEach((p, idx) => {
                 sel.innerHTML += `<option value="${idx}">${p.nombre}</option>`;
             });
@@ -1383,7 +1420,7 @@
         function generarInformeEjecutivoAlisoftia() {
             const idx = document.getElementById('ai-selector-proyecto').value;
             if(idx === "") {
-                alert("Por favor seleccione un proyecto sincronizado de la base de datos.");
+                alert("Por favor seleccione un proyecto sincronizado del servidor.");
                 return;
             }
             const p = dbProyectos[idx];
@@ -1561,10 +1598,10 @@
             }, 250);
         }
 
-        function abrirChatIAGlobal() { abrirChatIAConContexto("Visión Global PostgreSQL", "Análisis transversal remoto."); }
+        function abrirChatIAGlobal() { abrirChatIAConContexto("Visión Global Servidor", "Análisis transversal remoto."); }
         function abrirChatIAConContexto(p, c) {
             document.getElementById('chatia-subtitle').innerText = `Contexto: ${p}`;
-            document.getElementById('chatia-mensajes').innerHTML = `<div class="p-3 bg-white border rounded shadow-sm text-xs">Hola, soy ALISOFTIA Pro conectado a PostgreSQL. Analizando contexto: "${p}".</div>`;
+            document.getElementById('chatia-mensajes').innerHTML = `<div class="p-3 bg-white border rounded shadow-sm text-xs">Hola, soy ALISOFTIA Pro conectado al servidor. Analizando contexto: "${p}".</div>`;
             document.getElementById('modal-chatia').classList.remove('hidden');
         }
         function cerrarChatIA() { document.getElementById('modal-chatia').classList.add('hidden'); }
@@ -1574,7 +1611,7 @@
             document.getElementById('chatia-mensajes').innerHTML += `<div class="flex justify-end"><div class="p-2 bg-blue-600 text-white rounded text-xs">${txt.value}</div></div>`;
             txt.value = "";
             setTimeout(() => {
-                document.getElementById('chatia-mensajes').innerHTML += `<div class="flex justify-start"><div class="p-2 bg-white border rounded text-xs">PostgreSQL ALISOFTIA: Consulta ejecutada en servidor con éxito.</div></div>`;
+                document.getElementById('chatia-mensajes').innerHTML += `<div class="flex justify-start"><div class="p-2 bg-white border rounded text-xs">Servidor ALISOFTIA: Consulta ejecutada con éxito.</div></div>`;
             }, 600);
         }
 
@@ -1584,7 +1621,7 @@
         }
 
         new Chart(document.getElementById('chartFinanciero').getContext('2d'), { type: 'bar', data: { labels: ['Norteamérica', 'Centroamérica', 'Sudamérica'], datasets: [{ label: 'Ejecución (Q.)', data: [0, 0, 0], backgroundColor: ['#003366', '#2563eb', '#60a5fa'] }] }, options: { responsive: true, maintainAspectRatio: false } });
-        new Chart(document.getElementById('chartFisico').getContext('2d'), { type: 'line', data: { labels: ['Q1', 'Q2', 'Q3 (Prog)', 'Q3 (Ejec)'], datasets: [{ label: 'Avance Global (%)', data: [0, 0, 0, 0], borderColor: '#2563eb', fill: true, backgroundColor: 'rgba(37,99,235,0.1)' }] }, options: { responsive: true, maintainAspectRatio: false } });
+        newChart(document.getElementById('chartFisico').getContext('2d'), { type: 'line', data: { labels: ['Q1', 'Q2', 'Q3 (Prog)', 'Q3 (Ejec)'], datasets: [{ label: 'Avance Global (%)', data: [0, 0, 0, 0], borderColor: '#2563eb', fill: true, backgroundColor: 'rgba(37,99,235,0.1)' }] }, options: { responsive: true, maintainAspectRatio: false } });
     </script>
 </body>
 </html>
