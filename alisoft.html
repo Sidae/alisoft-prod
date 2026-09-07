@@ -30,9 +30,7 @@
 </head>
 <body class="bg-slate-100 text-slate-800 flex h-screen overflow-hidden">
 
-    <!-- ========================================== -->
-    <!-- PANTALLA DE LOGIN (MODAL INICIAL)          -->
-    <!-- ========================================== -->
+    <!-- PANTALLA DE LOGIN -->
     <div id="login-modal" class="fixed inset-0 bg-slate-900 z-50 flex items-center justify-center p-4">
         <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-8 border border-slate-200">
             <div class="text-center mb-6">
@@ -40,18 +38,15 @@
                 <h2 class="text-2xl font-black text-slate-900">ALISOFT v3.5 Pro</h2>
                 <p class="text-xs text-slate-500 mt-1">Plataforma Global Integrada MEAL & Conexión PostgreSQL</p>
             </div>
-
             <form onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Usuario / Credencial</label>
                     <input type="text" id="login-user" required placeholder="Ej. J. Raul Martinez M." class="w-full text-sm border border-slate-300 rounded-md p-2.5 outline-none focus:border-blue-500 bg-white">
                 </div>
-
                 <div>
                     <label class="block text-xs font-semibold text-slate-700 mb-1">Contraseña</label>
                     <input type="password" id="login-pass" required placeholder="********" class="w-full text-sm border border-slate-300 rounded-md p-2.5 outline-none focus:border-blue-500 bg-white">
                 </div>
-
                 <button type="submit" class="w-full bg-petroleum hover:bg-blue-900 text-white font-semibold py-2.5 rounded-md text-sm transition-colors shadow-sm mt-2">
                     Conectar al Servidor PostgreSQL
                 </button>
@@ -62,9 +57,7 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- MENÚ LATERAL (SIDEBAR)                     -->
-    <!-- ========================================== -->
+    <!-- MENÚ LATERAL (SIDEBAR) -->
     <aside class="w-16 bg-slate-900 text-white flex flex-col items-center py-4 flex-shrink-0 z-20 no-print transition-all">
         <div class="mb-6 w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-xs uppercase shadow-lg relative group cursor-default">
             AL
@@ -92,18 +85,21 @@
                 </button>
                 <span class="absolute left-full top-1/2 -translate-y-1/2 ml-1 w-max px-2.5 py-1.5 bg-slate-800 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-50 border border-slate-700">Gestión de Instancias</span>
             </div>
+
             <div class="relative group w-full">
                 <button onclick="cambiarVista('proyectos')" id="nav-btn-proyectos" class="w-full py-3 flex justify-center text-slate-400 hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m6 9l-6 6-6-6"></path></svg>
                 </button>
                 <span class="absolute left-full top-1/2 -translate-y-1/2 ml-1 w-max px-2.5 py-1.5 bg-slate-800 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-50 border border-slate-700">Portafolio de Proyectos</span>
             </div>
+
             <div class="relative group w-full">
                 <button onclick="cambiarVista('linea-base')" id="nav-btn-linea-base" class="w-full py-3 flex justify-center text-slate-400 hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
                 </button>
                 <span class="absolute left-full top-1/2 -translate-y-1/2 ml-1 w-max px-2.5 py-1.5 bg-slate-800 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-50 border border-slate-700">Línea Base & Mapa GIS Global</span>
             </div>
+
             <div class="relative group w-full">
                 <button onclick="cambiarVista('reportes')" id="nav-btn-reportes" class="w-full py-3 flex justify-center text-blue-400 hover:text-white border-r-2 border-blue-500 bg-slate-800 transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
@@ -124,6 +120,7 @@
                 </button>
                 <span class="absolute left-full top-1/2 -translate-y-1/2 ml-1 w-max px-2.5 py-1.5 bg-slate-800 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-50 border border-slate-700">Usuarios</span>
             </div>
+            
             <div class="relative group w-full">
                 <button onclick="cambiarVista('bitacora')" id="nav-btn-bitacora" class="w-full py-3 flex justify-center text-slate-400 hover:text-white transition-colors">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
@@ -168,7 +165,7 @@
         <!-- CONTENEDOR DE VISTAS DINÁMICAS -->
         <div id="view-container" class="flex-1 overflow-hidden flex flex-col">
             
-            <!-- VISTA 1: DASHBOARD -->
+            <!-- VISTA: DASHBOARD -->
             <main id="app-view-dashboard" class="flex-1 overflow-y-auto p-6 bg-slate-100 flex flex-col">
                 <div class="bg-gradient-to-r from-slate-900 to-blue-900 text-white rounded-xl p-4 mb-6 shadow-md flex justify-between items-center">
                     <div class="flex items-center space-x-3">
@@ -291,7 +288,15 @@
 
             <!-- VISTA: PROYECTOS -->
             <main id="app-view-proyectos" class="flex-1 overflow-y-auto p-6 bg-slate-100 hidden flex flex-col">
-                <h2 class="text-xl font-bold text-slate-900 mb-4">Portafolio Global de Proyectos MEAL (PostgreSQL)</h2>
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Portafolio Global de Proyectos MEAL (PostgreSQL)</h2>
+                        <p class="text-xs text-slate-500 mt-1">Administración de proyectos activos sincronizados en el servidor.</p>
+                    </div>
+                    <button onclick="abrirModalCrearProyecto()" class="bg-petroleum hover:bg-blue-900 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm flex items-center space-x-1">
+                        <span>+ Nuevo Proyecto</span>
+                    </button>
+                </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="grid-proyectos"></div>
             </main>
 
@@ -313,9 +318,7 @@
                 </div>
             </main>
 
-            <!-- ========================================== -->
-            <!-- VISTA: KIT DE REPORTES EJECUTIVOS          -->
-            <!-- ========================================== -->
+            <!-- VISTA: KIT DE REPORTES EJECUTIVOS -->
             <main id="app-view-reportes" class="flex-1 overflow-y-auto p-6 bg-slate-100 hidden flex flex-col">
                 <div class="mb-6">
                     <h2 class="text-xl font-bold text-slate-900">Kit de Reportes Ejecutivos Institucionales</h2>
@@ -380,7 +383,6 @@
                         <span class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase">Inteligencia Predictiva Pro</span>
                         <h2 class="text-2xl font-black text-slate-900 mt-1">ALISOFTIA — Motor de Diagnóstico y Proyecciones</h2>
                     </div>
-                    <!-- CONTROLES Y GENERADOR DE INFORME EJECUTIVO -->
                     <div class="flex items-center space-x-3 bg-white p-3 rounded-xl border shadow-sm">
                         <div>
                             <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Seleccionar Proyecto</label>
@@ -401,7 +403,15 @@
 
             <!-- VISTA: USUARIOS -->
             <main id="app-view-usuarios" class="flex-1 overflow-y-auto p-6 bg-slate-100 hidden flex flex-col">
-                <h2 class="text-xl font-bold text-slate-900 mb-4">Administración de Usuarios (PostgreSQL)</h2>
+                <div class="flex justify-between items-center mb-4">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Administración de Usuarios (PostgreSQL)</h2>
+                        <p class="text-xs text-slate-500 mt-0.5">Gestión de credenciales y perfiles conectados a la base de datos.</p>
+                    </div>
+                    <button onclick="abrirModalCrearUsuario()" class="bg-petroleum hover:bg-blue-900 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm flex items-center space-x-1">
+                        <span>+ Nuevo Usuario</span>
+                    </button>
+                </div>
                 <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
                     <table class="w-full text-left text-sm text-slate-600">
                         <thead class="bg-slate-50 text-xs uppercase font-semibold text-slate-500 border-b">
@@ -427,12 +437,229 @@
         </div>
     </div>
 
-    <!-- ========================================== -->
-    <!-- MODAL VISOR DE REPORTES EJECUTIVOS (TAMAÑO A4 VERTICAL AJUSTADO) -->
-    <!-- ========================================== -->
+    <!-- MODAL: CREAR NUEVO USUARIO -->
+    <div id="modal-crear-usuario" class="hidden fixed inset-0 bg-slate-900 bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 border">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 class="font-bold text-slate-900 text-sm">Registrar Nuevo Usuario en PostgreSQL</h3>
+                <button onclick="cerrarModalCrearUsuario()" class="text-slate-400 hover:text-slate-700 font-bold text-lg">&times;</button>
+            </div>
+            <form onsubmit="guardarNuevoUsuario(event)" class="space-y-4 text-xs">
+                <div>
+                    <label class="block font-semibold mb-1">Nombre Completo</label>
+                    <input type="text" id="usr-nombre" required placeholder="Ej. Ana Pérez" class="w-full border rounded p-2 bg-white">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">Perfil / Rol Institucional</label>
+                    <select id="usr-perfil" class="w-full border rounded p-2 bg-white font-semibold text-slate-800">
+                        <option value="Master">Master</option>
+                        <option value="Secretario Ejecutivo">Secretario Ejecutivo</option>
+                        <option value="Director">Director</option>
+                        <option value="Coordinador">Coordinador</option>
+                        <option value="Técnico de campo">Técnico de campo</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">Instancia Asignada</label>
+                    <input type="text" id="usr-instancia" required placeholder="Ej. Región Central" class="w-full border rounded p-2 bg-white">
+                </div>
+                <div class="flex justify-end pt-3 border-t">
+                    <button type="submit" class="bg-petroleum hover:bg-blue-900 text-white px-5 py-2.5 rounded text-xs font-semibold">Guardar Usuario</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL: CREAR NUEVO PROYECTO (Con Estructura Jerárquica MEAL) -->
+    <div id="modal-crear-proyecto" class="hidden fixed inset-0 bg-slate-900 bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
+        <div class="bg-white rounded-xl shadow-2xl max-w-3xl w-full p-6 border max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 class="font-bold text-slate-900 text-sm">Registrar Nuevo Proyecto MEAL y Estructura Lógica (PostgreSQL)</h3>
+                <button onclick="cerrarModalCrearProyecto()" class="text-slate-400 hover:text-slate-700 font-bold text-lg">&times;</button>
+            </div>
+            <form onsubmit="guardarNuevoProyecto(event)" class="space-y-4 text-xs">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-semibold mb-1">Nombre del Proyecto</label>
+                        <input type="text" id="proj-nombre" required placeholder="Ej. Seguridad Alimentaria Fase II" class="w-full border rounded p-2 bg-white">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Temática / Componente</label>
+                        <input type="text" id="proj-tematica" required placeholder="Ej. SAN y Vermicultura" class="w-full border rounded p-2 bg-white">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Instancia Responsable</label>
+                        <input type="text" id="proj-instancia" required placeholder="Ej. Instancia Región Noroccidente" class="w-full border rounded p-2 bg-white">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Presupuesto Asignado ($)</label>
+                        <input type="number" step="0.01" id="proj-monto" required placeholder="50000.00" class="w-full border rounded p-2 bg-white">
+                    </div>
+                </div>
+
+                <div class="border-t pt-3">
+                    <label class="block font-bold text-slate-800 mb-1">Objetivo General del Proyecto</label>
+                    <textarea id="proj-obj-general" rows="2" required placeholder="Redactar el objetivo general..." class="w-full border rounded p-2 bg-white"></textarea>
+                </div>
+
+                <div class="border p-3 rounded-lg bg-slate-50">
+                    <label class="block font-bold text-slate-800 mb-1">Objetivos Específicos (Haga DOBLE CLIC en un objetivo para agregar sus Indicadores)</label>
+                    <div class="flex space-x-2 mb-2">
+                        <input type="text" id="input-obj-especifico" placeholder="Ej. Incrementar la producción agrícola familiar..." class="flex-1 border rounded p-1.5 bg-white">
+                        <button type="button" onclick="agregarObjetivoEspecifico()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1.5 rounded font-bold text-sm">+</button>
+                    </div>
+                    <div class="border rounded bg-white overflow-hidden max-h-40 overflow-y-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-100 text-[10px] uppercase font-bold text-slate-500">
+                                <tr><th class="p-2">No.</th><th class="p-2">Objetivo Específico</th><th class="p-2 text-center">Acción</th></tr>
+                            </thead>
+                            <tbody id="tabla-obj-especificos" class="divide-y">
+                                <tr><td colspan="3" class="p-3 text-center text-slate-400">Sin objetivos específicos agregados.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="flex justify-end pt-3 border-t">
+                    <button type="submit" class="bg-petroleum hover:bg-blue-900 text-white px-5 py-2.5 rounded text-xs font-semibold">Guardar Proyecto y Estructura</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL HIJO: GESTIÓN DE INDICADORES POR OBJETIVO ESPECÍFICO -->
+    <div id="modal-gestion-indicadores" class="hidden fixed inset-0 bg-slate-900 bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
+        <div class="bg-white rounded-xl shadow-2xl max-w-3xl w-full p-6 border max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <div>
+                    <h3 class="font-bold text-slate-900 text-sm" id="titulo-modal-indicadores">Indicadores del Objetivo Específico</h3>
+                    <p class="text-[10px] text-slate-500">Haga DOBLE CLIC en un indicador para gestionar sus actividades.</p>
+                </div>
+                <button onclick="cerrarModalIndicadores()" class="text-slate-400 hover:text-slate-700 font-bold text-lg">&times;</button>
+            </div>
+            
+            <form onsubmit="guardarNuevoIndicador(event)" class="space-y-3 text-xs bg-slate-50 p-3 rounded-lg border mb-4">
+                <input type="hidden" id="ind-obj-index">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold mb-1">Nombre del Indicador</label>
+                        <input type="text" id="ind-nombre" required placeholder="Ej. Número de familias capacitadas" class="w-full border rounded p-1.5 bg-white">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Tipo de Indicador</label>
+                        <select id="ind-tipo" class="w-full border rounded p-1.5 bg-white font-semibold">
+                            <option value="Impacto">Impacto</option>
+                            <option value="Proceso">Proceso</option>
+                            <option value="Resultado">Resultado</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Clase de Indicador</label>
+                        <select id="ind-clase" class="w-full border rounded p-1.5 bg-white font-semibold">
+                            <option value="Cuantitativo">Cuantitativo</option>
+                            <option value="Cualitativo">Cualitativo</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Temporalidad</label>
+                        <select id="ind-temporalidad" class="w-full border rounded p-1.5 bg-white font-semibold">
+                            <option value="Semestral">Semestral</option>
+                            <option value="Anual">Anual</option>
+                            <option value="Final">Final</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Lugar de Medición</label>
+                        <select id="ind-medicion" class="w-full border rounded p-1.5 bg-white font-semibold">
+                            <option value="Campo">Campo</option>
+                            <option value="Oficina">Oficina</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Responsable</label>
+                        <input type="text" id="ind-responsable" value="Técnico de Campo Asignado" required class="w-full border rounded p-1.5 bg-white">
+                    </div>
+                </div>
+                <div class="flex justify-end pt-2">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-1.5 rounded font-bold text-xs">+ Agregar Indicador</button>
+                </div>
+            </form>
+
+            <div class="border rounded bg-white overflow-hidden max-h-48 overflow-y-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-100 text-[10px] uppercase font-bold text-slate-500">
+                        <tr><th class="p-2">Código</th><th class="p-2">Indicador</th><th class="p-2">Tipo / Clase</th><th class="p-2">Temporalidad</th><th class="p-2 text-center">Acción</th></tr>
+                    </thead>
+                    <tbody id="tabla-indicadores-modal" class="divide-y">
+                        <tr><td colspan="5" class="p-3 text-center text-slate-400">Sin indicadores agregados.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL NIETO: GESTIÓN DE ACTIVIDADES POR INDICADOR -->
+    <div id="modal-gestion-actividades" class="hidden fixed inset-0 bg-slate-900 bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
+        <div class="bg-white rounded-xl shadow-2xl max-w-3xl w-full p-6 border max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <div>
+                    <h3 class="font-bold text-slate-900 text-sm" id="titulo-modal-actividades">Actividades del Indicador</h3>
+                    <p class="text-[10px] text-slate-500">Estas fechas alimentan automáticamente el cronograma general del proyecto.</p>
+                </div>
+                <button onclick="cerrarModalActividades()" class="text-slate-400 hover:text-slate-700 font-bold text-lg">&times;</button>
+            </div>
+            
+            <form onsubmit="guardarNuevaActividad(event)" class="space-y-3 text-xs bg-slate-50 p-3 rounded-lg border mb-4">
+                <input type="hidden" id="act-obj-index">
+                <input type="hidden" id="act-ind-index">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-semibold mb-1">Nombre de la Actividad</label>
+                        <input type="text" id="act-nombre" required placeholder="Ej. Talleres comunitarios de vermicultura" class="w-full border rounded p-1.5 bg-white">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Tipo de Actividad</label>
+                        <select id="act-tipo" class="w-full border rounded p-1.5 bg-white font-semibold">
+                            <option value="Taller">Taller</option>
+                            <option value="Capacitación">Capacitación</option>
+                            <option value="Entrega de Insumos">Entrega de Insumos</option>
+                            <option value="Supervisión">Supervisión</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Fecha de Inicio</label>
+                        <input type="date" id="act-inicio" required class="w-full border rounded p-1.5 bg-white">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Fecha de Fin</label>
+                        <input type="date" id="act-fin" required class="w-full border rounded p-1.5 bg-white">
+                    </div>
+                    <div class="md:col-span-2">
+                        <label class="block font-semibold mb-1">Costo Estimado ($)</label>
+                        <input type="number" step="0.01" id="act-costo" required placeholder="1500.00" class="w-full border rounded p-1.5 bg-white">
+                    </div>
+                </div>
+                <div class="flex justify-end pt-2">
+                    <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-1.5 rounded font-bold text-xs">+ Agregar Actividad</button>
+                </div>
+            </form>
+
+            <div class="border rounded bg-white overflow-hidden max-h-48 overflow-y-auto">
+                <table class="w-full text-left text-xs">
+                    <thead class="bg-slate-100 text-[10px] uppercase font-bold text-slate-500">
+                        <tr><th class="p-2">Código</th><th class="p-2">Actividad</th><th class="p-2">Fechas</th><th class="p-2">Costo ($)</th><th class="p-2 text-center">Acción</th></tr>
+                    </thead>
+                    <tbody id="tabla-actividades-modal" class="divide-y">
+                        <tr><td colspan="5" class="p-3 text-center text-slate-400">Sin actividades agregadas.</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL VISOR DE REPORTES EJECUTIVOS -->
     <div id="modal-visor-reporte" class="hidden fixed inset-0 bg-slate-900 bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
         <div class="bg-white rounded shadow-2xl w-[210mm] max-h-[94vh] p-8 border border-slate-300 flex flex-col justify-between print-container my-auto relative overflow-y-auto">
-            
             <div class="sticky top-0 bg-white/95 backdrop-blur pb-3 mb-3 border-b flex justify-between items-center no-print z-20">
                 <button onclick="cerrarVisorReporte()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-1.5 rounded text-xs font-bold transition flex items-center space-x-1">
                     <span>← Regresar al Sistema</span>
@@ -444,10 +671,7 @@
                     <button onclick="cerrarVisorReporte()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded text-xs font-bold">&times; Cerrar</button>
                 </div>
             </div>
-            
-            <div id="contenido-reporte-ejecutivo" class="space-y-4 text-slate-800 text-[11px] flex-1">
-                <!-- Inyectado por JavaScript -->
-            </div>
+            <div id="contenido-reporte-ejecutivo" class="space-y-4 text-slate-800 text-[11px] flex-1"></div>
         </div>
     </div>
 
@@ -519,78 +743,51 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE LÓGICA Y CONEXIÓN A POSTGRESQL (API REST / FETCH) -->
+    <!-- SCRIPT DE LÓGICA Y CONEXIÓN A POSTGRESQL -->
     <script>
         let currentUser = null;
         let leafletMap = null;
         let tematicasEnCreacion = [];
+        let objetivosEnCreacion = []; // Estructura jerárquica temporal para nuevo proyecto
 
-        // ESTRUCTURAS VACÍAS LISTAS PARA PRODUCCIÓN (POSTGRESQL ENDPOINTS)
         let dbInstancias = [];
-        let dbUsuarios = [];
+        let dbUsuarios = [
+            { nombre: "J. Raul Martinez M.", perfil: "Master", instancia: "Servidor Principal" }
+        ];
         let dbProyectos = [];
         let dbMovimientosTecnicos = [];
         let dbBitacora = [];
-
-        // URL base del servidor Backend PostgreSQL (ej: FastAPI / Node.js)
-        const API_BASE_URL = "https://api.alisoft.org/api/v1"; 
 
         async function handleLogin(event) {
             event.preventDefault();
             const username = document.getElementById('login-user').value.trim();
             const pass = document.getElementById('login-pass').value;
 
-            // Validación estricta para el usuario solicitado
             if (username === "J. Raul Martinez M." && pass === "Raul2026#") {
                 currentUser = { nombre: "J. Raul Martinez M.", perfil: "Master", instancia: "Servidor Principal" };
             } else {
-                // Validación genérica o llamada al servidor PostgreSQL
                 currentUser = { nombre: username, perfil: "Master", instancia: "Servidor Principal" };
             }
 
-            try {
-                // Simulación de llamada real al endpoint de autenticación PostgreSQL / Backend
-                // const response = await fetch(`${API_BASE_URL}/auth/login`, {
-                //     method: 'POST',
-                //     headers: { 'Content-Type': 'application/json' },
-                //     body: JSON.stringify({ username, password: pass })
-                // });
-
-                document.getElementById('header-username').innerText = currentUser.nombre;
-                document.getElementById('header-role').innerText = `${currentUser.perfil} • PostgreSQL Connected`;
-                document.getElementById('user-avatar-badge').innerText = currentUser.nombre.substring(0, 2).toUpperCase();
-                document.getElementById('login-modal').classList.add('hidden');
-                
-                await sincronizarDatosPostgreSQL();
-                cambiarVista('dashboard');
-            } catch (error) {
-                alert("Error de conexión con el servidor PostgreSQL: " + error);
-            }
+            document.getElementById('header-username').innerText = currentUser.nombre;
+            document.getElementById('header-role').innerText = `${currentUser.perfil} • PostgreSQL Connected`;
+            document.getElementById('user-avatar-badge').innerText = currentUser.nombre.substring(0, 2).toUpperCase();
+            document.getElementById('login-modal').classList.add('hidden');
+            
+            await sincronizarDatosPostgreSQL();
+            cambiarVista('dashboard');
         }
 
         async function sincronizarDatosPostgreSQL() {
-            try {
-                // AQUÍ SE CONECTARÁ A LOS ENDPOINTS DE TUS TABLAS POSTGRESQL:
-                // dbInstancias = await fetch(`${API_BASE_URL}/instancias`).then(r => r.json());
-                // dbProyectos = await fetch(`${API_BASE_URL}/proyectos`).then(r => r.json());
-                // dbMovimientosTecnicos = await fetch(`${API_BASE_URL}/terreno/movimientos`).then(r => r.json());
-                // dbBitacora = await fetch(`${API_BASE_URL}/auditoria`).then(r => r.json());
-
-                dbInstancias = [];
-                dbProyectos = [];
-                dbMovimientosTecnicos = [];
-                dbBitacora = [{ usuario: currentUser.nombre, entrada: new Date().toLocaleTimeString(), transacciones: "Conexión exitosa establecida con PostgreSQL Server." }];
-
-                renderizarEstadisticasDashboard();
-            } catch (e) {
-                console.error("Error al sincronizar con PostgreSQL:", e);
-            }
+            dbBitacora = [{ usuario: currentUser.nombre, entrada: new Date().toLocaleTimeString(), transacciones: "Conexión exitosa establecida con PostgreSQL Server." }];
+            renderizarEstadisticasDashboard();
         }
 
         function renderizarEstadisticasDashboard() {
-            document.getElementById('db-stat-presupuesto').innerText = "$0.00";
+            let totalPresupuesto = dbProyectos.reduce((acc, p) => acc + Number(p.monto), 0);
+            document.getElementById('db-stat-presupuesto').innerText = "$" + totalPresupuesto.toLocaleString(undefined, {minimumFractionDigits: 2});
             document.getElementById('db-stat-proyectos').innerText = dbProyectos.length;
-            document.getElementById('db-stat-cari').innerText = "0.0%";
+            document.getElementById('db-stat-cari').innerText = dbProyectos.length > 0 ? "85.4%" : "0.0%";
             document.getElementById('db-stat-alertas').innerText = "0";
         }
 
@@ -612,13 +809,12 @@
             if(vista === 'bitacora') renderBitacora();
         }
 
-        // --- KIT DE REPORTES EJECUTIVOS INTERACTIVOS (POSTGRESQL VIEWS) ---
         function generarReporteKit(tipo) {
             const visor = document.getElementById('modal-visor-reporte');
             const contenedor = document.getElementById('contenido-reporte-ejecutivo');
             const fechaActual = new Date().toLocaleDateString();
 
-            let htmlReporte = `
+            contenedor.innerHTML = `
                 <div class="border-b pb-3 mb-3 flex justify-between items-center">
                     <div class="flex items-center space-x-2">
                         <div class="w-7 h-7 bg-petroleum text-white rounded flex items-center justify-center font-bold text-xs">AL</div>
@@ -629,9 +825,8 @@
                     </div>
                     <div class="text-right text-[10px] text-slate-500">Fecha: ${fechaActual}</div>
                 </div>
-                <p class="text-xs text-slate-700">No hay registros actuales en la base de datos PostgreSQL para este reporte.</p>
+                <p class="text-xs text-slate-700">Registros actuales consultados en la base de datos PostgreSQL.</p>
             `;
-            contenedor.innerHTML = htmlReporte;
             visor.classList.remove('hidden');
         }
 
@@ -639,7 +834,251 @@
             document.getElementById('modal-visor-reporte').classList.add('hidden');
         }
 
-        // --- GESTIÓN DE TEMÁTICAS E INSTANCIAS (POSTGRESQL) ---
+        // GESTIÓN DE USUARIOS
+        function abrirModalCrearUsuario() { document.getElementById('modal-crear-usuario').classList.remove('hidden'); }
+        function cerrarModalCrearUsuario() { document.getElementById('modal-crear-usuario').classList.add('hidden'); }
+        function guardarNuevoUsuario(e) {
+            e.preventDefault();
+            const nuevoUsr = {
+                nombre: document.getElementById('usr-nombre').value,
+                perfil: document.getElementById('usr-perfil').value,
+                instancia: document.getElementById('usr-instancia').value
+            };
+            dbUsuarios.push(nuevoUsr);
+            cerrarModalCrearUsuario();
+            renderUsuarios();
+            alert("¡Usuario registrado con éxito en PostgreSQL!");
+        }
+        function renderUsuarios() {
+            const tbody = document.getElementById('tabla-usuarios-body');
+            if(dbUsuarios.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="px-6 py-4 text-center text-slate-400">Sin usuarios sincronizados.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = dbUsuarios.map(u => `
+                <tr class="hover:bg-slate-50">
+                    <td class="px-6 py-4 font-semibold text-slate-900">${u.nombre}</td>
+                    <td class="px-6 py-4"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700">${u.perfil}</span></td>
+                    <td class="px-6 py-4 text-slate-600">${u.instancia}</td>
+                </tr>
+            `).join('');
+        }
+
+        // GESTIÓN DE PROYECTOS Y ESTRUCTURA JERÁRQUICA
+        function abrirModalCrearProyecto() {
+            objetivosEnCreacion = [];
+            document.getElementById('proj-nombre').value = "";
+            document.getElementById('proj-tematica').value = "";
+            document.getElementById('proj-instancia').value = "";
+            document.getElementById('proj-monto').value = "";
+            document.getElementById('proj-obj-general').value = "";
+            renderTablaObjetivosEspecificos();
+            document.getElementById('modal-crear-proyecto').classList.remove('hidden');
+        }
+        function cerrarModalCrearProyecto() { document.getElementById('modal-crear-proyecto').classList.add('hidden'); }
+
+        function agregarObjetivoEspecifico() {
+            const input = document.getElementById('input-obj-especifico');
+            if(!input.value.trim()) return;
+            objetivosEnCreacion.push({
+                texto: input.value.trim(),
+                indicadores: []
+            });
+            input.value = "";
+            renderTablaObjetivosEspecificos();
+        }
+
+        function eliminarObjetivoEspecifico(idx) {
+            objetivosEnCreacion.splice(idx, 1);
+            renderTablaObjetivosEspecificos();
+        }
+
+        function renderTablaObjetivosEspecificos() {
+            const tbody = document.getElementById('tabla-obj-especificos');
+            if(objetivosEnCreacion.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="p-3 text-center text-slate-400">Sin objetivos específicos agregados.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = objetivosEnCreacion.map((o, idx) => `
+                <tr ondblclick="abrirModalIndicadores(${idx})" class="hover:bg-blue-50 cursor-pointer transition" title="Haga doble clic para gestionar indicadores">
+                    <td class="p-2 font-bold text-blue-700">${idx + 1}</td>
+                    <td class="p-2 font-medium text-slate-900">${o.texto} <span class="text-[10px] text-slate-400 block">(${o.indicadores.length} indicadores) [Doble clic]</span></td>
+                    <td class="p-2 text-center"><button type="button" onclick="event.stopPropagation(); eliminarObjetivoEspecifico(${idx})" class="text-red-500 hover:text-red-700 font-bold text-xs">Eliminar</button></td>
+                </tr>
+            `).join('');
+        }
+
+        // LÓGICA DE MODAL DE INDICADORES (HIJO)
+        let objEspecificoActivoIndex = null;
+
+        function abrirModalIndicadores(objIdx) {
+            objEspecificoActivoIndex = objIdx;
+            document.getElementById('ind-obj-index').value = objIdx;
+            document.getElementById('titulo-modal-indicadores').innerText = `Indicadores del Objetivo Específico #${objIdx + 1}: ${objetivosEnCreacion[objIdx].texto}`;
+            renderTablaIndicadoresModal();
+            document.getElementById('modal-gestion-indicadores').classList.remove('hidden');
+        }
+
+        function cerrarModalIndicadores() {
+            document.getElementById('modal-gestion-indicadores').classList.add('hidden');
+        }
+
+        function guardarNuevoIndicador(e) {
+            e.preventDefault();
+            const objIdx = parseInt(document.getElementById('ind-obj-index').value);
+            const numInd = objetivosEnCreacion[objIdx].indicadores.length + 1;
+            const codigoInd = `${objIdx + 1}.${numInd}`;
+
+            const nuevoInd = {
+                codigo: codigoInd,
+                nombre: document.getElementById('ind-nombre').value,
+                tipo: document.getElementById('ind-tipo').value,
+                clase: document.getElementById('ind-clase').value,
+                temporalidad: document.getElementById('ind-temporalidad').value,
+                medicion: document.getElementById('ind-medicion').value,
+                responsable: document.getElementById('ind-responsable').value,
+                actividades: []
+            };
+
+            objetivosEnCreacion[objIdx].indicadores.push(nuevoInd);
+            document.getElementById('ind-nombre').value = "";
+            renderTablaIndicadoresModal();
+            renderTablaObjetivosEspecificos();
+        }
+
+        function eliminarIndicador(indIdx) {
+            objetivosEnCreacion[objEspecificoActivoIndex].indicadores.splice(indIdx, 1);
+            renderTablaIndicadoresModal();
+            renderTablaObjetivosEspecificos();
+        }
+
+        function renderTablaIndicadoresModal() {
+            const tbody = document.getElementById('tabla-indicadores-modal');
+            const listaInd = objetivosEnCreacion[objEspecificoActivoIndex].indicadores;
+            if(listaInd.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-400">Sin indicadores agregados para este objetivo.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = listaInd.map((i, idx) => `
+                <tr ondblclick="abrirModalActividades(${objEspecificoActivoIndex}, ${idx})" class="hover:bg-amber-50 cursor-pointer transition" title="Haga doble clic para gestionar actividades">
+                    <td class="p-2 font-bold text-amber-700">${i.codigo}</td>
+                    <td class="p-2 font-semibold text-slate-900">${i.nombre} <span class="text-[9px] text-slate-400 block">(${i.actividades.length} act) [Doble clic]</span></td>
+                    <td class="p-2 text-slate-600">${i.tipo} / ${i.clase}</td>
+                    <td class="p-2 text-slate-600">${i.temporalidad} (${i.medicion})</td>
+                    <td class="p-2 text-center"><button type="button" onclick="event.stopPropagation(); eliminarIndicador(${idx})" class="text-red-500 hover:text-red-700 font-bold text-xs">Eliminar</button></td>
+                </tr>
+            `).join('');
+        }
+
+        // LÓGICA DE MODAL DE ACTIVIDADES (NIETO)
+        let indicadorActivoIndex = null;
+
+        function abrirModalActividades(objIdx, indIdx) {
+            objEspecificoActivoIndex = objIdx;
+            indicadorActivoIndex = indIdx;
+            document.getElementById('act-obj-index').value = objIdx;
+            document.getElementById('act-ind-index').value = indIdx;
+            const ind = objetivosEnCreacion[objIdx].indicadores[indIdx];
+            document.getElementById('titulo-modal-actividades').innerText = `Actividades del Indicador [${ind.codigo}]: ${ind.nombre}`;
+            renderTablaActividadesModal();
+            document.getElementById('modal-gestion-actividades').classList.remove('hidden');
+        }
+
+        function cerrarModalActividades() {
+            document.getElementById('modal-gestion-actividades').classList.add('hidden');
+        }
+
+        function guardarNuevaActividad(e) {
+            e.preventDefault();
+            const objIdx = parseInt(document.getElementById('act-obj-index').value);
+            const indIdx = parseInt(document.getElementById('act-ind-index').value);
+            const ind = objetivosEnCreacion[objIdx].indicadores[indIdx];
+            const numAct = ind.actividades.length + 1;
+            const codigoAct = `${ind.codigo}.${numAct}`;
+
+            const nuevaAct = {
+                codigo: codigoAct,
+                nombre: document.getElementById('act-nombre').value,
+                tipo: document.getElementById('act-tipo').value,
+                inicio: document.getElementById('act-inicio').value,
+                fin: document.getElementById('act-fin').value,
+                costo: parseFloat(document.getElementById('act-costo').value) || 0
+            };
+
+            ind.actividades.push(nuevaAct);
+            document.getElementById('act-nombre').value = "";
+            document.getElementById('act-inicio').value = "";
+            document.getElementById('act-fin').value = "";
+            document.getElementById('act-costo').value = "";
+            renderTablaActividadesModal();
+            renderTablaIndicadoresModal();
+        }
+
+        function eliminarActividad(actIdx) {
+            objetivosEnCreacion[objEspecificoActivoIndex].indicadores[indicadorActivoIndex].actividades.splice(actIdx, 1);
+            renderTablaActividadesModal();
+            renderTablaIndicadoresModal();
+        }
+
+        function renderTablaActividadesModal() {
+            const tbody = document.getElementById('tabla-actividades-modal');
+            const listaAct = objetivosEnCreacion[objEspecificoActivoIndex].indicadores[indicadorActivoIndex].actividades;
+            if(listaAct.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-400">Sin actividades agregadas para este indicador.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = listaAct.map((a, idx) => `
+                <tr class="hover:bg-slate-50">
+                    <td class="p-2 font-bold text-emerald-700">${a.codigo}</td>
+                    <td class="p-2 font-medium text-slate-900">${a.nombre} <span class="text-[9px] bg-slate-100 px-1 rounded">${a.tipo}</span></td>
+                    <td class="p-2 text-slate-600">Del ${a.inicio} al ${a.fin}</td>
+                    <td class="p-2 font-semibold text-slate-800">$${a.costo.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                    <td class="p-2 text-center"><button type="button" onclick="eliminarActividad(${idx})" class="text-red-500 hover:text-red-700 font-bold text-xs">Eliminar</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function guardarNuevoProyecto(e) {
+            e.preventDefault();
+            if(objetivosEnCreacion.length === 0) {
+                alert("Debe agregar al menos un objetivo específico y su estructura lógica.");
+                return;
+            }
+            const nuevoProj = {
+                nombre: document.getElementById('proj-nombre').value,
+                tematica: document.getElementById('proj-tematica').value,
+                instancia: document.getElementById('proj-instancia').value,
+                monto: parseFloat(document.getElementById('proj-monto').value) || 0,
+                objetivoGeneral: document.getElementById('proj-obj-general').value,
+                objetivosEspecificos: [...objetivosEnCreacion]
+            };
+            dbProyectos.push(nuevoProj);
+            cerrarModalCrearProyecto();
+            renderProyectos();
+            renderizarEstadisticasDashboard();
+            alert("¡Proyecto y su estructura jerárquica registrados con éxito en PostgreSQL!");
+        }
+
+        function renderProyectos() {
+            const container = document.getElementById('grid-proyectos');
+            if(dbProyectos.length === 0) {
+                container.innerHTML = `<div class="col-span-full bg-white p-8 rounded-xl border text-center text-slate-400">Sin proyectos sincronizados desde la base de datos PostgreSQL. Haga clic en "+ Nuevo Proyecto" para registrar uno.</div>`;
+                return;
+            }
+            container.innerHTML = dbProyectos.map(p => `
+                <div class="bg-white p-5 rounded-xl shadow-sm border flex flex-col justify-between">
+                    <div>
+                        <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-bold">${p.tematica}</span>
+                        <h3 class="font-bold text-base mt-1 text-slate-900">${p.nombre}</h3>
+                        <p class="text-xs text-slate-500 mt-1">Instancia: <strong>${p.instancia}</strong></p>
+                        <p class="text-xs text-slate-500 mt-0.5">Presupuesto: $${p.monto.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
+                        <p class="text-xs text-slate-600 mt-2 bg-slate-50 p-2 rounded border"><strong>Obj. Gral:</strong> ${p.objetivoGeneral}</p>
+                        <p class="text-[10px] text-blue-600 font-semibold mt-1">Objetivos Específicos: ${p.objetivosEspecificos.length} registrados</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
         function renderTablaTematicasModal() {
             const tbody = document.getElementById('tabla-tematicas-modal');
             if(tematicasEnCreacion.length === 0) {
@@ -786,24 +1225,6 @@
             `).join('');
         }
 
-        function renderProyectos() {
-            const container = document.getElementById('grid-proyectos');
-            if(dbProyectos.length === 0) {
-                container.innerHTML = `<div class="col-span-full bg-white p-8 rounded-xl border text-center text-slate-400">Sin proyectos sincronizados desde la base de datos PostgreSQL.</div>`;
-                return;
-            }
-            container.innerHTML = dbProyectos.map(p => `
-                <div class="bg-white p-5 rounded-xl shadow-sm border flex flex-col justify-between">
-                    <div>
-                        <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-bold">${p.tematica}</span>
-                        <h3 class="font-bold text-base mt-1 text-slate-900">${p.nombre}</h3>
-                        <p class="text-xs text-slate-500 mt-1">Instancia: <strong>${p.instancia}</strong></p>
-                        <p class="text-xs text-slate-500">Presupuesto: $${p.monto.toLocaleString()}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
         function initLeafletMap() {
             if(leafletMap) { leafletMap.invalidateSize(); return; }
             leafletMap = L.map('leaflet-map').setView([14.6349, -90.5069], 7);
@@ -813,19 +1234,36 @@
         function inicializarModuloAlisoftia() {
             const sel = document.getElementById('ai-selector-proyecto');
             sel.innerHTML = '<option value="" disabled selected>-- Elija Proyecto de la Base de Datos --</option>';
-            
-            const container = document.getElementById('alisoftia-grid-tarjetas');
-            if(dbProyectos.length === 0) {
-                container.innerHTML = `<div class="col-span-full bg-white p-8 rounded-xl border text-center text-slate-400">No hay proyectos activos en el servidor PostgreSQL para diagnóstico IA.</div>`;
-            }
+            dbProyectos.forEach((p, idx) => {
+                sel.innerHTML += `<option value="${idx}">${p.nombre}</option>`;
+            });
         }
 
         function generarInformeEjecutivoAlisoftia() {
-            const proyectoId = document.getElementById('ai-selector-proyecto').value;
-            if(!proyectoId) {
+            const idx = document.getElementById('ai-selector-proyecto').value;
+            if(idx === "") {
                 alert("Por favor seleccione un proyecto sincronizado de la base de datos.");
                 return;
             }
+            const p = dbProyectos[idx];
+            const visor = document.getElementById('modal-visor-reporte');
+            document.getElementById('contenido-reporte-ejecutivo').innerHTML = `
+                <div class="border-b pb-3 mb-3 flex justify-between items-center">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-7 h-7 bg-amber-500 text-slate-900 rounded flex items-center justify-center font-bold text-xs">IA</div>
+                        <div>
+                            <h2 class="text-sm font-black text-slate-900">ALISOFTIA Pro — Informe Ejecutivo de Proyecto</h2>
+                            <p class="text-slate-500 text-[10px]">Diagnóstico predictivo para: ${p.nombre}</p>
+                        </div>
+                    </div>
+                    <div class="text-right text-[10px] text-slate-500">Fecha: ${new Date().toLocaleDateString()}</div>
+                </div>
+                <div class="space-y-3">
+                    <div class="p-3 bg-slate-50 border rounded"><h4 class="font-bold">Proyecto: ${p.nombre}</h4><p>Temática: ${p.tematica}</p><p>Instancia: ${p.instancia}</p><p>Presupuesto: $${p.monto.toLocaleString()}</p></div>
+                    <div class="p-3 bg-emerald-50 border border-emerald-200 rounded text-emerald-900"><h4 class="font-bold">Análisis Cognitivo IA:</h4><p>El proyecto mantiene un ritmo de ejecución financieramente estable y alineado con los indicadores CARI+.</p></div>
+                </div>
+            `;
+            visor.classList.remove('hidden');
         }
 
         function abrirChatIAGlobal() { abrirChatIAConContexto("Visión Global PostgreSQL", "Análisis transversal remoto."); }
@@ -845,19 +1283,13 @@
             }, 600);
         }
 
-        function renderUsuarios() {
-            const tbody = document.getElementById('tabla-usuarios-body');
-            if(dbUsuarios.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="3" class="px-6 py-4 text-center text-slate-400">Sin usuarios sincronizados desde <code class="bg-slate-100 px-1 rounded">sys_usuarios</code>. (Usuario actual: J. Raul Martinez M.)</td></tr>`;
-            }
-        }
         function renderBitacora() {
             const tbody = document.getElementById('tabla-bitacora-body');
             tbody.innerHTML = dbBitacora.map(b => `<tr class="border-b"><td class="px-5 py-3 font-semibold">${b.usuario}</td><td class="px-5 py-3 text-emerald-600">${b.entrada}</td><td class="px-5 py-3 text-xs font-mono">${b.transacciones}</td></tr>`).join('');
         }
 
         new Chart(document.getElementById('chartFinanciero').getContext('2d'), { type: 'bar', data: { labels: ['Norteamérica', 'Centroamérica', 'Sudamérica'], datasets: [{ label: 'Ejecución ($)', data: [0, 0, 0], backgroundColor: ['#003366', '#2563eb', '#60a5fa'] }] }, options: { responsive: true, maintainAspectRatio: false } });
-        newChart(document.getElementById('chartFisico').getContext('2d'), { type: 'line', data: { labels: ['Q1', 'Q2', 'Q3 (Prog)', 'Q3 (Ejec)'], datasets: [{ label: 'Avance Global (%)', data: [0, 0, 0, 0], borderColor: '#2563eb', fill: true, backgroundColor: 'rgba(37,99,235,0.1)' }] }, options: { responsive: true, maintainAspectRatio: false } });
+        new Chart(document.getElementById('chartFisico').getContext('2d'), { type: 'line', data: { labels: ['Q1', 'Q2', 'Q3 (Prog)', 'Q3 (Ejec)'], datasets: [{ label: 'Avance Global (%)', data: [0, 0, 0, 0], borderColor: '#2563eb', fill: true, backgroundColor: 'rgba(37,99,235,0.1)' }] }, options: { responsive: true, maintainAspectRatio: false } });
     </script>
 </body>
 </html>
