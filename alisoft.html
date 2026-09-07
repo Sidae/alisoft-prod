@@ -6,7 +6,6 @@
     <title>ALISOFT - Sistema Integrado MEAL & Kit de Reportes Ejecutivos</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
-    <script src="https://cdn.jsdelivr.net/npm/tailwindcss5"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Leaflet CSS & JS -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
@@ -453,6 +452,10 @@
                     <input type="text" id="usr-nombre" required placeholder="Ej. Ana Pérez" class="w-full border rounded p-2 bg-white">
                 </div>
                 <div>
+                    <label class="block font-semibold mb-1">Contraseña</label>
+                    <input type="password" id="usr-pass" required placeholder="********" class="w-full border rounded p-2 bg-white">
+                </div>
+                <div>
                     <label class="block font-semibold mb-1">Perfil / Rol Institucional</label>
                     <select id="usr-perfil" class="w-full border rounded p-2 bg-white font-semibold text-slate-800">
                         <option value="Master">Master</option>
@@ -838,7 +841,12 @@
         }
 
         // GESTIÓN DE USUARIOS
-        function abrirModalCrearUsuario() { document.getElementById('modal-crear-usuario').classList.remove('hidden'); }
+        function abrirModalCrearUsuario() { 
+            document.getElementById('usr-nombre').value = "";
+            document.getElementById('usr-pass').value = "";
+            document.getElementById('usr-instancia').value = "";
+            document.getElementById('modal-crear-usuario').classList.remove('hidden'); 
+        }
         function cerrarModalCrearUsuario() { document.getElementById('modal-crear-usuario').classList.add('hidden'); }
         function guardarNuevoUsuario(e) {
             e.preventDefault();
@@ -1027,7 +1035,7 @@
             const tbody = document.getElementById('tabla-actividades-modal');
             const listaAct = objetivosEnCreacion[objEspecificoActivoIndex].indicadores[indicadorActivoIndex].actividades;
             if(listaAct.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-400">Sin actividades agregadas para este indicador.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="5" class="p-3 text-center text-slate-400">Sin actividades agregadas.</td></tr>`;
                 return;
             }
             tbody.innerHTML = listaAct.map((a, idx) => `
@@ -1271,7 +1279,6 @@
             const contenedor = document.getElementById('contenido-reporte-ejecutivo');
             const fechaActual = new Date().toLocaleDateString();
 
-            // Restricción por rol de usuario
             let esGerencial = (rol === "Master" || rol === "Secretario Ejecutivo" || rol === "Director" || rol === "Coordinador");
 
             let htmlObjs = "";
@@ -1341,9 +1348,7 @@
                 </div>
             `;
 
-            // Estructura A4 de 2 Páginas exactas con separador page-break
             contenedor.innerHTML = `
-                <!-- PÁGINA 1: OBJETIVO GENERAL, OBJETIVOS ESPECÍFICOS Y GRÁFICAS -->
                 <div class="space-y-4">
                     <div class="border-b pb-3 mb-3 flex justify-between items-center">
                         <div class="flex items-center space-x-2">
@@ -1368,10 +1373,8 @@
                     </div>
                 </div>
 
-                <!-- SALTO DE PÁGINA A4 -->
                 <div class="page-break my-8 border-t-2 border-dashed border-slate-300 pt-4"></div>
 
-                <!-- PÁGINA 2: INDICADORES, CRONOGRAMA DE ACTIVIDADES Y COMPONENTES -->
                 <div class="space-y-4">
                     <div class="border-b pb-3 mb-3 flex justify-between items-center">
                         <div class="flex items-center space-x-2">
@@ -1418,7 +1421,6 @@
             `;
             visor.classList.remove('hidden');
 
-            // Renderizado de Gráficas Chart.js (Velocímetro tipo doughnut y Tendencia lineal)
             setTimeout(() => {
                 p.objetivosEspecificos.forEach((obj, oIdx) => {
                     let ctxVel = document.getElementById(`chart-vel-${oIdx}`);
@@ -1475,4 +1477,3 @@
     </script>
 </body>
 </html>
-```[cite: 3]
