@@ -19,7 +19,7 @@ db_memoria = {
     ]
 }
 
-# Modelos Pydantic corregidos
+# Modelos Pydantic para validación de datos
 class Instancia(BaseModel):
     nombre: str
     director: str
@@ -87,6 +87,24 @@ def actualizar_proyecto(index: int, proyecto: Proyecto):
         db_memoria["bitacora"].insert(0, {"usuario": "Sistema", "entrada": "Ahora", "transacciones": f"Proyecto modificado: {proyecto.nombre}"})
         return {"mensaje": "Proyecto actualizado con éxito"}
     raise HTTPException(status_code=404, detail="Proyecto no encontrado")
+
+@app.delete("/api/proyectos")
+def eliminar_proyectos(indices: List[int]):
+    indices_ordenados = sorted(indices, reverse=True)
+    eliminados = []
+    for idx in indices_ordenados:
+        if 0 <= idx < len(db_memoria["proyectos"]):
+            proj = db_memoria["proyectos"].pop(idx)
+            eliminados.append(proj["nombre"])
+    
+    if eliminados:
+        db_memoria["bitacora"].insert(0, {
+            "usuario": "Master", 
+            "entrada": "Ahora", 
+            "transacciones": f"Proyectos eliminados: {', '.join(eliminados)}"
+        })
+        return {"mensaje": "Proyectos eliminados con éxito"}
+    raise HTTPException(status_code=400, detail="Índices inválidos para eliminación")
 
 # --- ENDPOINTS DE USUARIOS ---
 @app.get("/api/usuarios")
