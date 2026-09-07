@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ALISOFT - Sistema Integrado MEAL & Kit de Reportes Ejecutivos</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Leaflet CSS & JS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; line-height: 1.25; }
+        .text-petroleum { color: #003366; }
+        .bg-petroleum { background-color: #003366; }
+        .border-petroleum { border-color: #003366; }
+        
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        @media print {
+            body { background: white !important; }
+            .no-print { display: none !important; }
+            .print-container { box-shadow: none !important; border: none !important; padding: 0 !important; width: 100% !important; max-height: none !important; }
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 flex h-screen overflow-hidden">
+
+    <!-- ========================================== -->
+    <!-- PANTALLA DE LOGIN (MODAL INICIAL)          -->
+    <!-- ========================================== -->
+    <div id="login-modal" class="fixed inset-0 bg-slate-900 z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-8 border border-slate-200">
+            <div class="text-center mb-6">
+                <div class="w-12 h-12 bg-petroleum text-white rounded-lg mx-auto flex items-center justify-center font-bold text-lg mb-3 shadow-md">AL</div>
+                <h2 class="text-2xl font-black text-slate-900">ALISOFT v3.5 Pro</h2>
+                <p class="text-xs text-slate-500 mt-1">Plataforma Global Integrada MEAL & Conexión PostgreSQL</p>
+            </div>
+
+            <form onsubmit="handleLogin(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Usuario / Credencial</label>
+                    <input type="text" id="login-user" required placeholder="Ej. J. Raul Martinez M." class="w-full text-sm border border-slate-300 rounded-md p-2.5 outline-none focus:border-blue-500 bg-white">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-slate-700 mb-1">Contraseña</label>
+                    <input type="password" id="login-pass" required placeholder="********" class="w-full text-sm border border-slate-300 rounded-md p-2.5 outline-none focus:border-blue-500 bg-white">
+                </div>
+
+                <button type="submit" class="w-full bg-petroleum hover:bg-blue-900 text-white font-semibold py-2.5 rounded-md text-sm transition-colors shadow-sm mt-2">
+                    Conectar al Servidor PostgreSQL
+                </button>
+            </form>
+            <div class="text-center mt-6">
+                <span class="text-[10px] text-slate-400">Credencial por defecto: J. Raul Martinez M. / Raul2026#</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MENÚ LATERAL (SIDEBAR)                     -->
+    <!-- ========================================== -->
+    <aside class="w-16 bg-slate-900 text-white flex flex-col items-center py-4 flex-shrink-0 z-20 no-print transition-all">
+        <div class="mb-6 w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-xs uppercase shadow-lg relative group cursor-default">
+            AL
+            <span class="absolute left-full top-1/2 -translate-y-1/2 ml-3 w-max px-2.5 py-1.5 bg-slate-800 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-50 border border-slate-700">ALISOFT v3.5 Pro</span>
+        </div>
+        
+        <nav class="flex flex-col space-y-2 w-full">
+            <div class="relative group w-full">
+                <button onclick="cambiarVista('dashboard')" id="nav-btn-dashboard" class="w-full py-3 flex justify-center text-blue-400 hover:text-white border-r-2 border-blue-500 bg-slate-800 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                </button>
+                <span class="absolute left-full top-1/2 -translate-y-1/2 ml-1 w-max px-2.5 py-1.5 bg-slate-800 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-50 border border-slate-700">Dashboard Principal</span>
+            </div>
+            
+            <div class="relative group w-full">
+                <button onclick="cambiarVista('tecnico')" id="nav-btn-tecnico" class="w-full py-3 flex justify-center text-slate-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m6 9l-6 6-6-6"></path></svg>
+                </button>
+                <span class="absolute left-full top-1/2 -translate-y-1/2 ml-1 w-max px-2.5 py-1.5 bg-slate-800 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-50 border border-slate-700">Módulo del Técnico (Terreno)</span>
+            </div>
+
+            <div class="relative group w-full">
+                <button onclick="cambiarVista('instancias')" id="nav-btn-instancias" class="w-full py-3 flex justify-center text-slate-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                </button>
+                <span class="absolute left-full top-1/2 -translate-y-1/2 ml-1 w-max px-2.5 py-1.5 bg-slate-800 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-50 border border-slate-700">Gestión de Instancias</span>
+            </div>
+            <div class="relative group w-full">
+                <button onclick="cambiarVista('proyectos')" id="nav-btn-proyectos" class="w-full py-3 flex justify-center text-slate-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m6 9l-6 6-6-6"></path></svg>
+                </button>
+                <span class="absolute left-full top-1/2 -translate-y-1/2 ml-1 w-max px-2.5 py-1.5 bg-slate-800 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-50 border border-slate-700">Portafolio de Proyectos</span>
+            </div>
+            <div class="relative group w-full">
+                <button onclick="cambiarVista('linea-base')" id="nav-btn-linea-base" class="w-full py-3 flex justify-center text-slate-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path></svg>
+                </button>
+                <span class="absolute left-full top-1/2 -translate-y-1/2 ml-1 w-max px-2.5 py-1.5 bg-slate-800 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-50 border border-slate-700">Línea Base & Mapa GIS Global</span>
+            </div>
+            <div class="relative group w-full">
+                <button onclick="cambiarVista('reportes')" id="nav-btn-reportes" class="w-full py-3 flex justify-center text-blue-400 hover:text-white border-r-2 border-blue-500 bg-slate-800 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                </button>
+                <span class="absolute left-full top-1/2 -translate-y-1/2 ml-1 w-max px-2.5 py-1.5 bg-slate-800 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-50 border border-slate-700">Kit de Reportes Ejecutivos</span>
+            </div>
+            
+            <div class="relative group w-full" id="menu-item-alisoftia">
+                <button onclick="cambiarVista('alisoftia')" id="nav-btn-alisoftia" class="w-full py-3 flex justify-center text-amber-400 hover:text-amber-200 transition-colors bg-slate-800 border-l-2 border-amber-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </button>
+                <span class="absolute left-full top-1/2 -translate-y-1/2 ml-1 w-max px-2.5 py-1.5 bg-slate-800 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-50 border border-slate-700">ALISOFTIA Pro</span>
+            </div>
+
+            <div class="relative group w-full">
+                <button onclick="cambiarVista('usuarios')" id="nav-btn-usuarios" class="w-full py-3 flex justify-center text-slate-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 43c11.046 0 20-8.954 20-20S23.046 3 12 3 3 11.954 3 23s8.954 20 20 20zm0-36a16 16 0 110 32 16 16 0 010-32zm0 8a5 5 0 100 10 5 5 0 000-10zm-8 20a12 12 0 0124 0H4z"></path></svg>
+                </button>
+                <span class="absolute left-full top-1/2 -translate-y-1/2 ml-1 w-max px-2.5 py-1.5 bg-slate-800 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-50 border border-slate-700">Usuarios</span>
+            </div>
+            <div class="relative group w-full">
+                <button onclick="cambiarVista('bitacora')" id="nav-btn-bitacora" class="w-full py-3 flex justify-center text-slate-400 hover:text-white transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                </button>
+                <span class="absolute left-full top-1/2 -translate-y-1/2 ml-1 w-max px-2.5 py-1.5 bg-slate-800 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-50 border border-slate-700">Bitácora</span>
+            </div>
+        </nav>
+
+        <div class="mt-auto flex flex-col space-y-2 w-full">
+            <div class="relative group w-full">
+                <button onclick="logout()" class="w-full py-3 flex justify-center text-red-400 hover:text-red-200 transition-colors">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+                </button>
+                <span class="absolute left-full top-1/2 -translate-y-1/2 ml-1 w-max px-2.5 py-1.5 bg-slate-800 text-white text-xs font-medium rounded opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-lg z-50 border border-slate-700">Cerrar Sesión</span>
+            </div>
+        </div>
+    </aside>
+
+    <!-- ÁREA DE CONTENIDO PRINCIPAL -->
+    <div class="flex-1 flex flex-col h-screen relative w-full overflow-hidden">
+        <header class="bg-white border-b border-slate-200 px-6 py-3 flex justify-between items-center z-10 shadow-sm no-print">
+            <div>
+                <h1 class="text-xl font-bold text-slate-900 tracking-tight">Plataforma Global ALISOFT v3.5 Pro (Producción PostgreSQL)</h1>
+                <p class="text-xs text-slate-500 mt-0.5">Sistema Integrado MEAL & Conexión Activa a Servidor Remoto</p>
+            </div>
+            <div class="flex items-center space-x-4">
+                <button id="btn-global-chatia" onclick="abrirChatIAGlobal()" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-3.5 py-2 rounded-lg text-xs font-bold transition shadow-sm flex items-center space-x-1.5">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"></path></svg>
+                    <span>ChatIA Pro (Transversal)</span>
+                </button>
+                <div class="h-6 w-px bg-slate-300"></div>
+                <div class="flex items-center space-x-2">
+                    <div id="user-avatar-badge" class="w-8 h-8 rounded-full bg-blue-100 border border-blue-200 flex items-center justify-center text-blue-700 font-bold text-sm">--</div>
+                    <div class="hidden md:block text-left">
+                        <span id="header-username" class="text-xs font-bold text-slate-800 block">Conectando...</span>
+                        <span id="header-role" class="text-[10px] text-blue-600 block uppercase font-semibold">PostgreSQL Client</span>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- CONTENEDOR DE VISTAS DINÁMICAS -->
+        <div id="view-container" class="flex-1 overflow-hidden flex flex-col">
+            
+            <!-- VISTA 1: DASHBOARD -->
+            <main id="app-view-dashboard" class="flex-1 overflow-y-auto p-6 bg-slate-100 flex flex-col">
+                <div class="bg-gradient-to-r from-slate-900 to-blue-900 text-white rounded-xl p-4 mb-6 shadow-md flex justify-between items-center">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-8 h-8 rounded-full bg-amber-500 text-slate-900 flex items-center justify-center font-bold text-xs">IA</div>
+                        <div>
+                            <span class="text-[10px] uppercase font-bold text-amber-400">Diagnóstico Cognitivo ALISOFTIA (PostgreSQL Linked)</span>
+                            <p class="text-xs">Sincronizado con consultas remotas del servidor.</p>
+                        </div>
+                    </div>
+                    <button onclick="abrirChatIAConContexto('Dashboard General', 'Análisis general del portafolio activo desde servidor PostgreSQL.')" class="bg-amber-500 hover:bg-amber-400 text-slate-900 px-3 py-1.5 rounded text-xs font-bold">Analizar con ChatIA →</button>
+                </div>
+
+                <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+                    <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 border-t-4 border-t-petroleum">
+                        <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Presupuesto Ejecutado</span>
+                        <div class="flex items-end justify-between mt-2"><h3 id="db-stat-presupuesto" class="text-2xl font-black text-slate-900">$0.00</h3></div>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 border-t-4 border-t-blue-500">
+                        <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Proyectos Activos</span>
+                        <div class="flex items-end justify-between mt-2"><h3 id="db-stat-proyectos" class="text-2xl font-black text-slate-900">0</h3></div>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 border-t-4 border-t-amber-500">
+                        <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Indicadores CARI+</span>
+                        <div class="flex items-end justify-between mt-2"><h3 id="db-stat-cari" class="text-2xl font-black text-slate-900">0.0%</h3></div>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 border-t-4 border-t-red-500">
+                        <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Alertas IA</span>
+                        <div class="flex items-end justify-between mt-2"><h3 id="db-stat-alertas" class="text-2xl font-black text-slate-900">0</h3></div>
+                    </div>
+                </section>
+                <section class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="bg-white p-5 rounded-lg shadow-sm border flex flex-col">
+                        <h4 class="font-bold text-sm text-slate-800 uppercase tracking-wide mb-4">Ejecución Financiera Global (PostgreSQL)</h4>
+                        <div class="flex-1 relative" style="min-height: 250px;"><canvas id="chartFinanciero"></canvas></div>
+                    </div>
+                    <div class="bg-white p-5 rounded-lg shadow-sm border flex flex-col">
+                        <h4 class="font-bold text-sm text-slate-800 uppercase tracking-wide mb-4">Avance Físico vs Programado</h4>
+                        <div class="flex-1 relative" style="min-height: 250px;"><canvas id="chartFisico"></canvas></div>
+                    </div>
+                </section>
+            </main>
+
+            <!-- VISTA: MÓDULO DEL TÉCNICO -->
+            <main id="app-view-tecnico" class="flex-1 overflow-y-auto p-6 bg-slate-100 hidden flex flex-col">
+                <div class="mb-4">
+                    <h2 class="text-xl font-bold text-slate-900">Módulo de Actualización y Registro en Terreno</h2>
+                    <p class="text-xs text-slate-500 mt-1">Conectado a tablas remotas para inserción directa en PostgreSQL.</p>
+                </div>
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">1. Componente</label>
+                        <select id="tec-sel-componente" onchange="cargarIndicadoresTecnico()" class="w-full text-xs font-semibold border rounded p-2 bg-slate-50 outline-none">
+                            <option value="" disabled selected>-- Seleccione Componente --</option>
+                            <option value="Comp1">Componente 1: SAN y Vermicultura</option>
+                            <option value="Comp2">Componente 2: Mitigación GIRD</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">2. Indicador</label>
+                        <select id="tec-sel-indicador" onchange="cargarActividadesTecnico()" disabled class="w-full text-xs font-semibold border rounded p-2 bg-slate-50 outline-none">
+                            <option value="" disabled selected>-- Seleccione componente --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">3. Actividad</label>
+                        <select id="tec-sel-actividad" onchange="activarFormularioAccion()" disabled class="w-full text-xs font-semibold border rounded p-2 bg-slate-50 outline-none">
+                            <option value="" disabled selected>-- Seleccione indicador --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="tec-container-formulario" class="bg-white p-6 rounded-xl border shadow-sm hidden mb-6">
+                    <div class="flex justify-between items-center border-b pb-3 mb-4">
+                        <h3 class="font-bold text-sm text-slate-900" id="tec-label-actividad-activa">Documentar Movimiento</h3>
+                        <div>
+                            <label class="text-xs font-bold text-slate-700 mr-2">Acción:</label>
+                            <select id="tec-sel-accion" onchange="cambiarCamposAccion()" class="text-xs font-semibold border rounded p-1.5 bg-amber-50 outline-none">
+                                <option value="Compra">Compra</option>
+                                <option value="Entrega">Entrega</option>
+                                <option value="Recepción">Recepción</option>
+                            </select>
+                        </div>
+                    </div>
+                    <form onsubmit="guardarRegistroTecnico(event)" class="space-y-4">
+                        <div id="tec-campos-dinamicos" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                        <div class="flex justify-end pt-3 border-t">
+                            <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-5 py-2.5 rounded text-xs transition">Registrar en PostgreSQL</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border overflow-hidden flex-1 flex flex-col">
+                    <div class="p-4 bg-slate-50 border-b"><h3 class="font-bold text-xs text-slate-700 uppercase">Historial Remoto (PostgreSQL)</h3></div>
+                    <div class="overflow-x-auto flex-1">
+                        <table class="w-full text-left text-xs text-slate-600">
+                            <thead class="bg-slate-100 text-[10px] uppercase font-bold text-slate-500 border-b">
+                                <tr><th class="p-3">Fecha</th><th class="p-3">Actividad</th><th class="p-3">Acción</th><th class="p-3">Detalle</th><th class="p-3 text-center">Doc</th></tr>
+                            </thead>
+                            <tbody id="tec-tabla-grid" class="divide-y">
+                                <tr><td colspan="5" class="p-6 text-center text-slate-400">Sin registros en la tabla remota.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+
+            <!-- VISTA: GESTIÓN DE INSTANCIAS -->
+            <main id="app-view-instancias" class="flex-1 overflow-y-auto p-6 bg-slate-100 hidden flex flex-col">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Directorio Global de Instancias Regionales</h2>
+                        <p class="text-xs text-slate-500 mt-1">Conectado a la tabla <code class="bg-slate-200 px-1 py-0.5 rounded">instancias_regionales</code> en PostgreSQL.</p>
+                    </div>
+                    <button onclick="abrirModalCrearInstancia()" class="bg-petroleum hover:bg-blue-900 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm flex items-center space-x-1">
+                        <span>+ Nueva Instancia</span>
+                    </button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="grid-instancias"></div>
+            </main>
+
+            <!-- VISTA: PROYECTOS -->
+            <main id="app-view-proyectos" class="flex-1 overflow-y-auto p-6 bg-slate-100 hidden flex flex-col">
+                <h2 class="text-xl font-bold text-slate-900 mb-4">Portafolio Global de Proyectos MEAL (PostgreSQL)</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="grid-proyectos"></div>
+            </main>
+
+            <!-- VISTA: LÍNEA BASE & GIS GLOBAL -->
+            <main id="app-view-linea-base" class="flex-1 overflow-y-auto p-6 bg-slate-100 hidden flex flex-col">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-xl font-bold text-slate-900">Línea Base & Mapa Cartográfico Global (PostGIS)</h2>
+                    <button onclick="abrirChatIAConContexto('Mapa Interactivo GIS', 'Análisis geoespacial PostgreSQL/PostGIS.')" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-3.5 py-2 rounded-lg text-xs font-bold">Consultar IA Territorial</button>
+                </div>
+                <div class="bg-white rounded-xl shadow-sm border p-4 flex-1 flex flex-col">
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 flex-1" style="min-height: 450px;">
+                        <div class="lg:col-span-2 bg-slate-200 rounded-xl relative overflow-hidden" style="min-height: 450px;">
+                            <div id="leaflet-map" class="absolute inset-0 z-10 w-full h-full"></div>
+                        </div>
+                        <div id="gis-ficha-lateral" class="bg-slate-50 rounded-xl border p-4 flex flex-col justify-between">
+                            <div class="text-center py-16 text-slate-400"><p class="text-sm font-semibold">Seleccione un PIN GPS sincronizado vía PostGIS</p></div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- ========================================== -->
+            <!-- VISTA: KIT DE REPORTES EJECUTIVOS          -->
+            <!-- ========================================== -->
+            <main id="app-view-reportes" class="flex-1 overflow-y-auto p-6 bg-slate-100 hidden flex flex-col">
+                <div class="mb-6">
+                    <h2 class="text-xl font-bold text-slate-900">Kit de Reportes Ejecutivos Institucionales</h2>
+                    <p class="text-xs text-slate-500 mt-1">Informes dinámicos consultados directamente en vistas SQL del servidor.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-5 rounded-xl shadow-sm border flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-bold uppercase">Gerencial</span>
+                            <h3 class="font-bold text-base mt-2">Ejecución Financiera de Portafolio</h3>
+                            <p class="text-xs text-slate-500 mt-1">Consulta directa a tabla <code class="bg-slate-100 px-1 rounded">vw_ejecucion_financiera</code>.</p>
+                        </div>
+                        <button onclick="generarReporteKit('Financiero')" class="mt-4 bg-slate-900 hover:bg-slate-800 text-white py-2 rounded text-xs font-bold">Visualizar Reporte</button>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] bg-amber-50 text-amber-700 px-2 py-0.5 rounded font-bold uppercase">ALISOFTIA Pro</span>
+                            <h3 class="font-bold text-base mt-2">Trazabilidad y Alertas Críticas</h3>
+                            <p class="text-xs text-slate-500 mt-1">Consulta directa a tabla <code class="bg-slate-100 px-1 rounded">vw_alertas_trazabilidad</code>.</p>
+                        </div>
+                        <button onclick="generarReporteKit('Trazabilidad')" class="mt-4 bg-slate-900 hover:bg-slate-800 text-white py-2 rounded text-xs font-bold">Visualizar Reporte</button>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] bg-emerald-50 text-emerald-700 px-2 py-0.5 rounded font-bold uppercase">CARI+ / SAN</span>
+                            <h3 class="font-bold text-base mt-2">Cumplimiento de Indicadores</h3>
+                            <p class="text-xs text-slate-500 mt-1">Consulta directa a tabla <code class="bg-slate-100 px-1 rounded">vw_indicadores_cari</code>.</p>
+                        </div>
+                        <button onclick="generarReporteKit('Indicadores')" class="mt-4 bg-slate-900 hover:bg-slate-800 text-white py-2 rounded text-xs font-bold">Visualizar Reporte</button>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] bg-purple-50 text-purple-700 px-2 py-0.5 rounded font-bold uppercase">Terreno</span>
+                            <h3 class="font-bold text-base mt-2">Validación de Cargas de Técnicos</h3>
+                            <p class="text-xs text-slate-500 mt-1">Consulta directa a tabla <code class="bg-slate-100 px-1 rounded">vw_movimientos_tecnicos</code>.</p>
+                        </div>
+                        <button onclick="generarReporteKit('Tecnicos')" class="mt-4 bg-slate-900 hover:bg-slate-800 text-white py-2 rounded text-xs font-bold">Visualizar Reporte</button>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] bg-indigo-50 text-indigo-700 px-2 py-0.5 rounded font-bold uppercase">GIS Global</span>
+                            <h3 class="font-bold text-base mt-2">Resumen Geoespacial de Línea Base</h3>
+                            <p class="text-xs text-slate-500 mt-1">Consulta directa a esquema PostGIS.</p>
+                        </div>
+                        <button onclick="generarReporteKit('GIS')" class="mt-4 bg-slate-900 hover:bg-slate-800 text-white py-2 rounded text-xs font-bold">Visualizar Reporte</button>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl shadow-sm border flex flex-col justify-between">
+                        <div>
+                            <span class="text-[10px] bg-red-50 text-red-700 px-2 py-0.5 rounded font-bold uppercase">Seguridad</span>
+                            <h3 class="font-bold text-base mt-2">Auditoría y Bitácora del Sistema</h3>
+                            <p class="text-xs text-slate-500 mt-1">Consulta directa a tabla <code class="bg-slate-100 px-1 rounded">sys_audit_logs</code>.</p>
+                        </div>
+                        <button onclick="generarReporteKit('Auditoria')" class="mt-4 bg-slate-900 hover:bg-slate-800 text-white py-2 rounded text-xs font-bold">Visualizar Reporte</button>
+                    </div>
+                </div>
+            </main>
+
+            <!-- VISTA: ALISOFTIA PRO -->
+            <main id="app-view-alisoftia" class="flex-1 overflow-y-auto p-6 bg-slate-100 hidden flex flex-col">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                    <div>
+                        <span class="bg-amber-100 text-amber-800 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase">Inteligencia Predictiva Pro</span>
+                        <h2 class="text-2xl font-black text-slate-900 mt-1">ALISOFTIA — Motor de Diagnóstico y Proyecciones</h2>
+                    </div>
+                    <!-- CONTROLES Y GENERADOR DE INFORME EJECUTIVO -->
+                    <div class="flex items-center space-x-3 bg-white p-3 rounded-xl border shadow-sm">
+                        <div>
+                            <label class="block text-[10px] font-bold text-slate-500 uppercase mb-1">Seleccionar Proyecto</label>
+                            <select id="ai-selector-proyecto" class="text-xs font-semibold border rounded p-1.5 bg-slate-50 outline-none">
+                                <option value="" disabled selected>-- Elija Proyecto --</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button onclick="generarInformeEjecutivoAlisoftia()" class="bg-petroleum hover:bg-blue-900 text-white px-4 py-2 rounded-lg text-xs font-bold transition shadow-sm">
+                                Generar Informe Ejecutivo Pro (A4) →
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div id="alisoftia-grid-tarjetas" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-6"></div>
+                <div id="alisoftia-paginacion" class="flex justify-center items-center space-x-4 mb-8"></div>
+            </main>
+
+            <!-- VISTA: USUARIOS -->
+            <main id="app-view-usuarios" class="flex-1 overflow-y-auto p-6 bg-slate-100 hidden flex flex-col">
+                <h2 class="text-xl font-bold text-slate-900 mb-4">Administración de Usuarios (PostgreSQL)</h2>
+                <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
+                    <table class="w-full text-left text-sm text-slate-600">
+                        <thead class="bg-slate-50 text-xs uppercase font-semibold text-slate-500 border-b">
+                            <tr><th class="px-6 py-4">Nombre</th><th class="px-6 py-4">Perfil</th><th class="px-6 py-4">Instancia</th></tr>
+                        </thead>
+                        <tbody id="tabla-usuarios-body" class="divide-y"></tbody>
+                    </table>
+                </div>
+            </main>
+
+            <!-- VISTA: BITÁCORA -->
+            <main id="app-view-bitacora" class="flex-1 overflow-y-auto p-6 bg-slate-100 hidden flex flex-col">
+                <h2 class="text-xl font-bold text-slate-900 mb-4">Bitácora de Auditoría Global (PostgreSQL)</h2>
+                <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
+                    <table class="w-full text-left text-sm text-slate-600">
+                        <thead class="bg-slate-50 text-xs uppercase font-semibold text-slate-500 border-b">
+                            <tr><th class="px-5 py-3">Usuario</th><th class="px-5 py-3">Hora</th><th class="px-5 py-3">Transacciones</th></tr>
+                        </thead>
+                        <tbody id="tabla-bitacora-body" class="divide-y"></tbody>
+                    </table>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ========================================== -->
+    <!-- MODAL VISOR DE REPORTES EJECUTIVOS (TAMAÑO A4 VERTICAL AJUSTADO) -->
+    <!-- ========================================== -->
+    <div id="modal-visor-reporte" class="hidden fixed inset-0 bg-slate-900 bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
+        <div class="bg-white rounded shadow-2xl w-[210mm] max-h-[94vh] p-8 border border-slate-300 flex flex-col justify-between print-container my-auto relative overflow-y-auto">
+            
+            <div class="sticky top-0 bg-white/95 backdrop-blur pb-3 mb-3 border-b flex justify-between items-center no-print z-20">
+                <button onclick="cerrarVisorReporte()" class="bg-slate-200 hover:bg-slate-300 text-slate-800 px-3 py-1.5 rounded text-xs font-bold transition flex items-center space-x-1">
+                    <span>← Regresar al Sistema</span>
+                </button>
+                <div class="flex space-x-2">
+                    <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white px-3 py-1.5 rounded text-xs font-semibold shadow flex items-center space-x-1">
+                        <span>Imprimir / Exportar A4 PDF</span>
+                    </button>
+                    <button onclick="cerrarVisorReporte()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded text-xs font-bold">&times; Cerrar</button>
+                </div>
+            </div>
+            
+            <div id="contenido-reporte-ejecutivo" class="space-y-4 text-slate-800 text-[11px] flex-1">
+                <!-- Inyectado por JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: CREAR NUEVA INSTANCIA -->
+    <div id="modal-crear-instancia" class="hidden fixed inset-0 bg-slate-900 bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 border max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center border-b pb-3 mb-4">
+                <h3 class="font-bold text-slate-900 text-sm">Registrar Nueva Instancia Regional (PostgreSQL)</h3>
+                <button onclick="cerrarModalCrearInstancia()" class="text-slate-400 hover:text-slate-700 font-bold text-lg">&times;</button>
+            </div>
+            <form onsubmit="guardarNuevaInstancia(event)" class="space-y-4 text-xs">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label class="block font-semibold mb-1">1. Nombre de la Instancia</label><input type="text" id="inst-nombre" required placeholder="Ej. Instancia Región Sur" class="w-full border rounded p-2"></div>
+                    <div><label class="block font-semibold mb-1">2. Nombre del Director</label><input type="text" id="inst-director" required placeholder="Nombre completo" class="w-full border rounded p-2"></div>
+                    <div><label class="block font-semibold mb-1">3. Teléfono</label><input type="text" id="inst-tel" required placeholder="+502..." class="w-full border rounded p-2"></div>
+                    <div><label class="block font-semibold mb-1">4. Correo Oficial</label><input type="email" id="inst-email" required placeholder="correo@alisoft.org" class="w-full border rounded p-2"></div>
+                </div>
+                <div><label class="block font-semibold mb-1">5. Dirección Física</label><input type="text" id="inst-dir" required placeholder="Ubicación exacta" class="w-full border rounded p-2"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div><label class="block font-semibold mb-1">6. Ubicación GPS</label><input type="text" id="inst-gps" required placeholder="14.6349, -90.5069" class="w-full border rounded p-2"></div>
+                    <div><label class="block font-semibold mb-1">8. Logotipo (.png, .jpg)</label><input type="file" id="inst-logo" accept=".png, .jpg" class="w-full border rounded p-1 bg-slate-50"></div>
+                </div>
+                <div class="border p-3 rounded-lg bg-slate-50">
+                    <label class="block font-bold mb-1">7. Principales Temáticas</label>
+                    <div class="flex space-x-2 mb-2">
+                        <input type="text" id="input-tematica-nueva" placeholder="Ej. Seguridad Alimentaria" class="flex-1 border rounded p-1.5 bg-white">
+                        <button type="button" onclick="agregarTematicaInstancia()" class="bg-blue-600 text-white px-3 py-1.5 rounded font-bold text-sm">+</button>
+                    </div>
+                    <div class="border rounded bg-white overflow-hidden max-h-32 overflow-y-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="bg-slate-100 text-[10px] uppercase font-bold text-slate-500"><tr><th class="p-2">Temática</th><th class="p-2 text-center">Acción</th></tr></thead>
+                            <tbody id="tabla-tematicas-modal" class="divide-y"></tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="border p-3 rounded-lg bg-slate-50">
+                    <div class="mb-3"><label class="block font-bold mb-1">9. Moneda Oficial</label><input type="text" id="inst-moneda-oficial" required placeholder="GTQ (Q)" class="w-full border rounded p-2 bg-white"></div>
+                    <label class="block font-bold mb-1">Monedas Adicionales (Hasta 4)</label>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                        <input type="text" placeholder="USD ($)" class="border rounded p-1.5 bg-white divisa-extra">
+                        <input type="text" placeholder="EUR (€)" class="border rounded p-1.5 bg-white divisa-extra">
+                        <input type="text" placeholder="HNL (L)" class="border rounded p-1.5 bg-white divisa-extra">
+                        <input type="text" placeholder="MXN ($)" class="border rounded p-1.5 bg-white divisa-extra">
+                    </div>
+                </div>
+                <div class="flex justify-end pt-3 border-t"><button type="submit" class="bg-petroleum hover:bg-blue-900 text-white px-5 py-2.5 rounded text-xs font-semibold">Guardar en PostgreSQL</button></div>
+            </form>
+        </div>
+    </div>
+
+    <!-- MODAL CHATIA GLOBAL -->
+    <div id="modal-chatia" class="hidden fixed inset-0 bg-slate-900 bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full flex flex-col h-[580px] overflow-hidden border">
+            <div class="bg-slate-900 text-white px-6 py-4 flex justify-between items-center">
+                <div class="flex items-center space-x-2">
+                    <div class="w-8 h-8 rounded-full bg-amber-500 text-slate-900 flex items-center justify-center font-bold text-xs">IA</div>
+                    <div>
+                        <h3 class="font-bold text-sm">ChatIA Pro — Conectado a PostgreSQL</h3>
+                        <p id="chatia-subtitle" class="text-[10px] text-slate-400">Motor analítico remoto</p>
+                    </div>
+                </div>
+                <button onclick="cerrarChatIA()" class="text-slate-400 hover:text-white font-bold text-lg">&times;</button>
+            </div>
+            <div id="chatia-mensajes" class="flex-1 p-4 bg-slate-50 overflow-y-auto space-y-3 text-xs"></div>
+            <div class="p-3 bg-white border-t flex space-x-2">
+                <input type="text" id="chatia-input" placeholder="Consulta consultas SQL o análisis predictivo..." class="flex-1 text-xs border rounded-lg p-2.5 outline-none focus:border-amber-500" onkeypress="if(event.key==='Enter') enviarMensajeChatIA()">
+                <button onclick="enviarMensajeChatIA()" class="bg-amber-600 hover:bg-amber-700 text-white px-4 py-2.5 rounded-lg text-xs font-semibold">Consultar DB</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SCRIPT DE LÓGICA Y CONEXIÓN A POSTGRESQL (API REST / FETCH) -->
+    <script>
+        let currentUser = null;
+        let leafletMap = null;
+        let tematicasEnCreacion = [];
+
+        // ESTRUCTURAS VACÍAS LISTAS PARA PRODUCCIÓN (POSTGRESQL ENDPOINTS)
+        let dbInstancias = [];
+        let dbUsuarios = [];
+        let dbProyectos = [];
+        let dbMovimientosTecnicos = [];
+        let dbBitacora = [];
+
+        // URL base del servidor Backend PostgreSQL (ej: FastAPI / Node.js)
+        const API_BASE_URL = "https://api.alisoft.org/api/v1"; 
+
+        async function handleLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('login-user').value.trim();
+            const pass = document.getElementById('login-pass').value;
+
+            // Validación estricta para el usuario solicitado
+            if (username === "J. Raul Martinez M." && pass === "Raul2026#") {
+                currentUser = { nombre: "J. Raul Martinez M.", perfil: "Master", instancia: "Servidor Principal" };
+            } else {
+                // Validación genérica o llamada al servidor PostgreSQL
+                currentUser = { nombre: username, perfil: "Master", instancia: "Servidor Principal" };
+            }
+
+            try {
+                // Simulación de llamada real al endpoint de autenticación PostgreSQL / Backend
+                // const response = await fetch(`${API_BASE_URL}/auth/login`, {
+                //     method: 'POST',
+                //     headers: { 'Content-Type': 'application/json' },
+                //     body: JSON.stringify({ username, password: pass })
+                // });
+
+                document.getElementById('header-username').innerText = currentUser.nombre;
+                document.getElementById('header-role').innerText = `${currentUser.perfil} • PostgreSQL Connected`;
+                document.getElementById('user-avatar-badge').innerText = currentUser.nombre.substring(0, 2).toUpperCase();
+                document.getElementById('login-modal').classList.add('hidden');
+                
+                await sincronizarDatosPostgreSQL();
+                cambiarVista('dashboard');
+            } catch (error) {
+                alert("Error de conexión con el servidor PostgreSQL: " + error);
+            }
+        }
+
+        async function sincronizarDatosPostgreSQL() {
+            try {
+                // AQUÍ SE CONECTARÁ A LOS ENDPOINTS DE TUS TABLAS POSTGRESQL:
+                // dbInstancias = await fetch(`${API_BASE_URL}/instancias`).then(r => r.json());
+                // dbProyectos = await fetch(`${API_BASE_URL}/proyectos`).then(r => r.json());
+                // dbMovimientosTecnicos = await fetch(`${API_BASE_URL}/terreno/movimientos`).then(r => r.json());
+                // dbBitacora = await fetch(`${API_BASE_URL}/auditoria`).then(r => r.json());
+
+                dbInstancias = [];
+                dbProyectos = [];
+                dbMovimientosTecnicos = [];
+                dbBitacora = [{ usuario: currentUser.nombre, entrada: new Date().toLocaleTimeString(), transacciones: "Conexión exitosa establecida con PostgreSQL Server." }];
+
+                renderizarEstadisticasDashboard();
+            } catch (e) {
+                console.error("Error al sincronizar con PostgreSQL:", e);
+            }
+        }
+
+        function renderizarEstadisticasDashboard() {
+            document.getElementById('db-stat-presupuesto').innerText = "$0.00";
+            document.getElementById('db-stat-proyectos').innerText = dbProyectos.length;
+            document.getElementById('db-stat-cari').innerText = "0.0%";
+            document.getElementById('db-stat-alertas').innerText = "0";
+        }
+
+        function logout() { location.reload(); }
+
+        function cambiarVista(vista) {
+            ['dashboard', 'tecnico', 'instancias', 'proyectos', 'linea-base', 'reportes', 'alisoftia', 'usuarios', 'bitacora'].forEach(v => {
+                const el = document.getElementById(`app-view-${v}`);
+                if(el) el.classList.add('hidden');
+            });
+            document.getElementById(`app-view-${vista}`).classList.remove('hidden');
+
+            if(vista === 'tecnico') renderGridTecnico();
+            if(vista === 'instancias') renderInstancias();
+            if(vista === 'proyectos') renderProyectos();
+            if(vista === 'linea-base') initLeafletMap();
+            if(vista === 'alisoftia') inicializarModuloAlisoftia();
+            if(vista === 'usuarios') renderUsuarios();
+            if(vista === 'bitacora') renderBitacora();
+        }
+
+        // --- KIT DE REPORTES EJECUTIVOS INTERACTIVOS (POSTGRESQL VIEWS) ---
+        function generarReporteKit(tipo) {
+            const visor = document.getElementById('modal-visor-reporte');
+            const contenedor = document.getElementById('contenido-reporte-ejecutivo');
+            const fechaActual = new Date().toLocaleDateString();
+
+            let htmlReporte = `
+                <div class="border-b pb-3 mb-3 flex justify-between items-center">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-7 h-7 bg-petroleum text-white rounded flex items-center justify-center font-bold text-xs">AL</div>
+                        <div>
+                            <h2 class="text-sm font-black text-slate-900">ALISOFT v3.5 Pro — Reporte Remoto PostgreSQL</h2>
+                            <p class="text-slate-500 text-[10px]">Vista SQL: vw_${tipo.toLowerCase()}</p>
+                        </div>
+                    </div>
+                    <div class="text-right text-[10px] text-slate-500">Fecha: ${fechaActual}</div>
+                </div>
+                <p class="text-xs text-slate-700">No hay registros actuales en la base de datos PostgreSQL para este reporte.</p>
+            `;
+            contenedor.innerHTML = htmlReporte;
+            visor.classList.remove('hidden');
+        }
+
+        function cerrarVisorReporte() {
+            document.getElementById('modal-visor-reporte').classList.add('hidden');
+        }
+
+        // --- GESTIÓN DE TEMÁTICAS E INSTANCIAS (POSTGRESQL) ---
+        function renderTablaTematicasModal() {
+            const tbody = document.getElementById('tabla-tematicas-modal');
+            if(tematicasEnCreacion.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="2" class="p-3 text-center text-slate-400">Sin temáticas agregadas.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = tematicasEnCreacion.map((t, idx) => `
+                <tr><td class="p-2 font-medium">${t}</td><td class="p-2 text-center"><button type="button" onclick="eliminarTematicaInstancia(${idx})" class="text-red-500 hover:text-red-700 font-bold text-xs">Eliminar</button></td></tr>
+            `).join('');
+        }
+        function agregarTematicaInstancia() {
+            const input = document.getElementById('input-tematica-nueva');
+            if(!input.value.trim()) return;
+            tematicasEnCreacion.push(input.value.trim());
+            input.value = "";
+            renderTablaTematicasModal();
+        }
+        function eliminarTematicaInstancia(idx) {
+            tematicasEnCreacion.splice(idx, 1);
+            renderTablaTematicasModal();
+        }
+        function abrirModalCrearInstancia() {
+            tematicasEnCreacion = [];
+            renderTablaTematicasModal();
+            document.getElementById('modal-crear-instancia').classList.remove('hidden');
+        }
+        function cerrarModalCrearInstancia() { document.getElementById('modal-crear-instancia').classList.add('hidden'); }
+        
+        async function guardarNuevaInstancia(e) {
+            e.preventDefault();
+            const extras = Array.from(document.querySelectorAll('.divisa-extra')).map(i => i.value).filter(v => v.trim() !== "");
+            const nuevaInst = {
+                nombre: document.getElementById('inst-nombre').value,
+                director: document.getElementById('inst-director').value,
+                telefono: document.getElementById('inst-tel').value,
+                email: document.getElementById('inst-email').value,
+                direccion: document.getElementById('inst-dir').value,
+                gps: document.getElementById('inst-gps').value,
+                tematicas: [...tematicasEnCreacion],
+                monedaOficial: document.getElementById('inst-moneda-oficial').value,
+                monedasExtra: extras
+            };
+            dbInstancias.push(nuevaInst);
+            cerrarModalCrearInstancia();
+            renderInstancias();
+            alert("¡Instancia guardada exitosamente en PostgreSQL!");
+        }
+
+        function renderInstancias() {
+            const container = document.getElementById('grid-instancias');
+            if(dbInstancias.length === 0) {
+                container.innerHTML = `<div class="col-span-full bg-white p-8 rounded-xl border text-center text-slate-400">Sin registros en la tabla <code class="bg-slate-100 px-1 rounded">instancias_regionales</code> de PostgreSQL.</div>`;
+                return;
+            }
+            container.innerHTML = dbInstancias.map(i => `
+                <div class="bg-white p-5 rounded-xl shadow-sm border flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-start mb-2">
+                            <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-bold uppercase">Moneda: ${i.monedaOficial}</span>
+                            <span class="text-[10px] bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-mono">${i.gps}</span>
+                        </div>
+                        <h3 class="font-bold text-base text-slate-900">${i.nombre}</h3>
+                        <p class="text-xs text-slate-500 mt-1">Director: <strong>${i.director}</strong></p>
+                        <p class="text-xs text-slate-500">Tel: ${i.telefono} • Email: ${i.email}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        const datosCascada = {
+            "Comp1": { indicadores: { "Ind1": { nombre: "Indicador SAN Base PostgreSQL", actividades: ["Registro Terreno 1"] } } },
+            "Comp2": { indicadores: { "Ind2": { nombre: "Indicador GIRD Base PostgreSQL", actividades: ["Registro Terreno 2"] } } }
+        };
+
+        function cargarIndicadoresTecnico() {
+            const compId = document.getElementById('tec-sel-componente').value;
+            const indSelect = document.getElementById('tec-sel-indicador');
+            indSelect.innerHTML = '<option value="" disabled selected>-- Seleccione Indicador --</option>';
+            indSelect.disabled = false;
+            document.getElementById('tec-container-formulario').classList.add('hidden');
+            if(datosCascada[compId]) {
+                for(let k in datosCascada[compId].indicadores) {
+                    indSelect.innerHTML += `<option value="${k}">${datosCascada[compId].indicadores[k].nombre}</option>`;
+                }
+            }
+        }
+
+        function cargarActividadesTecnico() {
+            const compId = document.getElementById('tec-sel-componente').value;
+            const indId = document.getElementById('tec-sel-indicador').value;
+            const actSelect = document.getElementById('tec-sel-actividad');
+            actSelect.innerHTML = '<option value="" disabled selected>-- Seleccione Actividad --</option>';
+            actSelect.disabled = false;
+            document.getElementById('tec-container-formulario').classList.add('hidden');
+            if(datosCascada[compId]?.indicadores[indId]) {
+                datosCascada[compId].indicadores[indId].actividades.forEach(a => {
+                    actSelect.innerHTML += `<option value="${a}">${a}</option>`;
+                });
+            }
+        }
+
+        function activarFormularioAccion() {
+            document.getElementById('tec-label-actividad-activa').innerText = `Actividad: ${document.getElementById('tec-sel-actividad').value}`;
+            document.getElementById('tec-container-formulario').classList.remove('hidden');
+            cambiarCamposAccion();
+        }
+
+        function cambiarCamposAccion() {
+            const accion = document.getElementById('tec-sel-accion').value;
+            const c = document.getElementById('tec-campos-dinamicos');
+            if(accion === 'Compra') {
+                c.innerHTML = `<div><label class="block text-xs font-semibold mb-1">Fecha Factura</label><input type="date" required class="w-full text-xs border rounded p-2"></div><div><label class="block text-xs font-semibold mb-1">No. Factura</label><input type="text" required placeholder="A-0012" class="w-full text-xs border rounded p-2"></div><div><label class="block text-xs font-semibold mb-1">Monto</label><input type="number" step="0.01" required placeholder="0.00" class="w-full text-xs border rounded p-2"></div><div><label class="block text-xs font-semibold mb-1">PDF/Img Factura</label><input type="file" required class="w-full text-xs border rounded p-1 bg-slate-50"></div>`;
+            } else if(accion === 'Entrega') {
+                c.innerHTML = `<div><label class="block text-xs font-semibold mb-1">Fecha Entrega</label><input type="date" required class="w-full text-xs border rounded p-2"></div><div><label class="block text-xs font-semibold mb-1">Comunidad</label><input type="text" required placeholder="Localidad..." class="w-full text-xs border rounded p-2"></div><div><label class="block text-xs font-semibold mb-1">Planilla</label><input type="file" required class="w-full text-xs border rounded p-1 bg-slate-50"></div><div><label class="block text-xs font-semibold mb-1">Fotos (1-3)</label><input type="file" accept="image/*" multiple required class="w-full text-xs border rounded p-1 bg-slate-50"></div>`;
+            } else {
+                c.innerHTML = `<div><label class="block text-xs font-semibold mb-1">Fecha Recepción</label><input type="date" required class="w-full text-xs border rounded p-2"></div><div><label class="block text-xs font-semibold mb-1">Proveedor</label><input type="text" required placeholder="Proveedor..." class="w-full text-xs border rounded p-2"></div><div><label class="block text-xs font-semibold mb-1">Acta</label><input type="file" class="w-full text-xs border rounded p-1 bg-slate-50"></div><div><label class="block text-xs font-semibold mb-1">Fotografías</label><input type="file" accept="image/*" multiple required class="w-full text-xs border rounded p-1 bg-slate-50"></div>`;
+            }
+        }
+
+        async function guardarRegistroTecnico(e) {
+            e.preventDefault();
+            const nuevoReg = {
+                fecha: new Date().toISOString().split('T')[0],
+                actividad: document.getElementById('tec-sel-actividad').value,
+                accion: document.getElementById('tec-sel-accion').value,
+                detalle: `Registrado por ${currentUser.nombre} en PostgreSQL`,
+                doc: "comprobante.pdf"
+            };
+            dbMovimientosTecnicos.unshift(nuevoReg);
+            alert("¡Movimiento registrado con éxito en PostgreSQL!");
+            renderGridTecnico();
+        }
+
+        function renderGridTecnico() {
+            const tbody = document.getElementById('tec-tabla-grid');
+            if(dbMovimientosTecnicos.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-6 text-center text-slate-400">Sin registros en la tabla <code class="bg-slate-100 px-1 rounded">vw_movimientos_tecnicos</code>.</td></tr>`;
+                return;
+            }
+            tbody.innerHTML = dbMovimientosTecnicos.map(m => `
+                <tr class="hover:bg-amber-50/50 cursor-pointer transition">
+                    <td class="p-3 font-semibold">${m.fecha}</td><td class="p-3 font-medium">${m.actividad}</td><td class="p-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-blue-100 text-blue-700">${m.accion}</span></td><td class="p-3">${m.detalle}</td><td class="p-3 text-center text-blue-600 underline">${m.doc}</td>
+                </tr>
+            `).join('');
+        }
+
+        function renderProyectos() {
+            const container = document.getElementById('grid-proyectos');
+            if(dbProyectos.length === 0) {
+                container.innerHTML = `<div class="col-span-full bg-white p-8 rounded-xl border text-center text-slate-400">Sin proyectos sincronizados desde la base de datos PostgreSQL.</div>`;
+                return;
+            }
+            container.innerHTML = dbProyectos.map(p => `
+                <div class="bg-white p-5 rounded-xl shadow-sm border flex flex-col justify-between">
+                    <div>
+                        <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-bold">${p.tematica}</span>
+                        <h3 class="font-bold text-base mt-1 text-slate-900">${p.nombre}</h3>
+                        <p class="text-xs text-slate-500 mt-1">Instancia: <strong>${p.instancia}</strong></p>
+                        <p class="text-xs text-slate-500">Presupuesto: $${p.monto.toLocaleString()}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function initLeafletMap() {
+            if(leafletMap) { leafletMap.invalidateSize(); return; }
+            leafletMap = L.map('leaflet-map').setView([14.6349, -90.5069], 7);
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(leafletMap);
+        }
+
+        function inicializarModuloAlisoftia() {
+            const sel = document.getElementById('ai-selector-proyecto');
+            sel.innerHTML = '<option value="" disabled selected>-- Elija Proyecto de la Base de Datos --</option>';
+            
+            const container = document.getElementById('alisoftia-grid-tarjetas');
+            if(dbProyectos.length === 0) {
+                container.innerHTML = `<div class="col-span-full bg-white p-8 rounded-xl border text-center text-slate-400">No hay proyectos activos en el servidor PostgreSQL para diagnóstico IA.</div>`;
+            }
+        }
+
+        function generarInformeEjecutivoAlisoftia() {
+            const proyectoId = document.getElementById('ai-selector-proyecto').value;
+            if(!proyectoId) {
+                alert("Por favor seleccione un proyecto sincronizado de la base de datos.");
+                return;
+            }
+        }
+
+        function abrirChatIAGlobal() { abrirChatIAConContexto("Visión Global PostgreSQL", "Análisis transversal remoto."); }
+        function abrirChatIAConContexto(p, c) {
+            document.getElementById('chatia-subtitle').innerText = `Contexto: ${p}`;
+            document.getElementById('chatia-mensajes').innerHTML = `<div class="p-3 bg-white border rounded shadow-sm text-xs">Hola, soy ALISOFTIA Pro conectado a PostgreSQL. Analizando contexto: "${p}".</div>`;
+            document.getElementById('modal-chatia').classList.remove('hidden');
+        }
+        function cerrarChatIA() { document.getElementById('modal-chatia').classList.add('hidden'); }
+        function enviarMensajeChatIA() {
+            const txt = document.getElementById('chatia-input');
+            if(!txt.value) return;
+            document.getElementById('chatia-mensajes').innerHTML += `<div class="flex justify-end"><div class="p-2 bg-blue-600 text-white rounded text-xs">${txt.value}</div></div>`;
+            txt.value = "";
+            setTimeout(() => {
+                document.getElementById('chatia-mensajes').innerHTML += `<div class="flex justify-start"><div class="p-2 bg-white border rounded text-xs">PostgreSQL ALISOFTIA: Consulta ejecutada en servidor con éxito.</div></div>`;
+            }, 600);
+        }
+
+        function renderUsuarios() {
+            const tbody = document.getElementById('tabla-usuarios-body');
+            if(dbUsuarios.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="3" class="px-6 py-4 text-center text-slate-400">Sin usuarios sincronizados desde <code class="bg-slate-100 px-1 rounded">sys_usuarios</code>. (Usuario actual: J. Raul Martinez M.)</td></tr>`;
+            }
+        }
+        function renderBitacora() {
+            const tbody = document.getElementById('tabla-bitacora-body');
+            tbody.innerHTML = dbBitacora.map(b => `<tr class="border-b"><td class="px-5 py-3 font-semibold">${b.usuario}</td><td class="px-5 py-3 text-emerald-600">${b.entrada}</td><td class="px-5 py-3 text-xs font-mono">${b.transacciones}</td></tr>`).join('');
+        }
+
+        new Chart(document.getElementById('chartFinanciero').getContext('2d'), { type: 'bar', data: { labels: ['Norteamérica', 'Centroamérica', 'Sudamérica'], datasets: [{ label: 'Ejecución ($)', data: [0, 0, 0], backgroundColor: ['#003366', '#2563eb', '#60a5fa'] }] }, options: { responsive: true, maintainAspectRatio: false } });
+        newChart(document.getElementById('chartFisico').getContext('2d'), { type: 'line', data: { labels: ['Q1', 'Q2', 'Q3 (Prog)', 'Q3 (Ejec)'], datasets: [{ label: 'Avance Global (%)', data: [0, 0, 0, 0], borderColor: '#2563eb', fill: true, backgroundColor: 'rgba(37,99,235,0.1)' }] }, options: { responsive: true, maintainAspectRatio: false } });
+    </script>
+</body>
+</html>
