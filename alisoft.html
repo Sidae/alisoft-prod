@@ -421,7 +421,7 @@
                 <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
                     <table class="w-full text-left text-sm text-slate-600">
                         <thead class="bg-slate-50 text-xs uppercase font-semibold text-slate-500 border-b">
-                            <tr><th class="px-6 py-4">Nombre</th><th class="px-6 py-4">Perfil</th><th class="px-6 py-4">Instancia Asignada</th></tr>
+                            <tr><th class="px-6 py-4">Nombre</th><th class="px-6 py-4">Perfil</th><th class="px-6 py-4">Instancia / Proyecto Asignado</th></tr>
                         </thead>
                         <tbody id="tabla-usuarios-body" class="divide-y"></tbody>
                     </table>
@@ -464,15 +464,16 @@
                     <select id="usr-perfil" onchange="verificarPerfilUsuario()" class="w-full border rounded p-2 bg-white font-semibold text-slate-800">
                         <option value="Master">Master</option>
                         <option value="Secretario Ejecutivo">Secretario Ejecutivo</option>
+                        <option value="Secretario General">Secretario General</option>
                         <option value="Director">Director</option>
                         <option value="Coordinador">Coordinador</option>
                         <option value="Técnico de campo">Técnico de campo</option>
                     </select>
                 </div>
                 <div>
-                    <label class="block font-semibold mb-1">Instancia Asignada</label>
+                    <label class="block font-semibold mb-1">Asignación (Proyecto Activo / Instancia)</label>
                     <select id="usr-instancia" required class="w-full border rounded p-2 bg-white font-semibold text-slate-800">
-                        <option value="" disabled selected>-- Seleccione Instancia --</option>
+                        <option value="" disabled selected>-- Seleccione Proyecto Activo --</option>
                     </select>
                 </div>
                 <div class="flex justify-end pt-3 border-t">
@@ -703,7 +704,7 @@
                 </div>
                 <div><label class="block font-semibold mb-1">5. Dirección Física</label><input type="text" id="inst-dir" required placeholder="Ubicación exacta" class="w-full border rounded p-2"></div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div><label class="block font-semibold mb-1">6. Ubicación GPS</label><input type="text" id="inst-gps" required placeholder="14.6349, -90.5069" class="w-full border rounded p-2"></div>
+                    <div><label class="block font-semibold mb-1">6. Ubicación GPS (Lat, Long)</label><input type="text" id="inst-gps" required placeholder="14.6349, -90.5069" class="w-full border rounded p-2"></div>
                     <div><label class="block font-semibold mb-1">8. Logotipo (.png, .jpg)</label><input type="file" id="inst-logo" accept=".png, .jpg" class="w-full border rounded p-1 bg-slate-50"></div>
                 </div>
                 <div class="border p-3 rounded-lg bg-slate-50">
@@ -755,21 +756,30 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE LÓGICA Y CONEXIÓN A POSTGRESQL -->
+    <!-- SCRIPT DE LÓGICA Y CONEXIÓN A POSTGRESQL CON PERSISTENCIA LOCALSTORAGE -->
     <script>
         let currentUser = null;
         let leafletMap = null;
         let tematicasEnCreacion = [];
-        let objetivosEnCreacion = []; // Estructura jerárquica temporal para nuevo/editar proyecto
-        let proyectoEditandoIndex = null; // Controla si se está creando o modificando un proyecto
+        let objetivosEnCreacion = []; 
+        let proyectoEditandoIndex = null; 
 
-        let dbInstancias = [];
-        let dbUsuarios = [
+        // Carga inicial desde localStorage para garantizar persistencia local en el navegador
+        let dbInstancias = JSON.parse(localStorage.getItem('alisoft_instancias')) || [];
+        let dbUsuarios = JSON.parse(localStorage.getItem('alisoft_usuarios')) || [
             { nombre: "J. Raul Martinez M.", perfil: "Master", instancia: "Todos" }
         ];
-        let dbProyectos = [];
-        let dbMovimientosTecnicos = [];
-        let dbBitacora = [];
+        let dbProyectos = JSON.parse(localStorage.getItem('alisoft_proyectos')) || [];
+        let dbMovimientosTecnicos = JSON.parse(localStorage.getItem('alisoft_movimientos')) || [];
+        let dbBitacora = JSON.parse(localStorage.getItem('alisoft_bitacora')) || [];
+
+        function guardarEnLocalStorage() {
+            localStorage.setItem('alisoft_instancias', JSON.stringify(dbInstancias));
+            localStorage.setItem('alisoft_usuarios', JSON.stringify(dbUsuarios));
+            localStorage.setItem('alisoft_proyectos', JSON.stringify(dbProyectos));
+            localStorage.setItem('alisoft_movimientos', JSON.stringify(dbMovimientosTecnicos));
+            localStorage.setItem('alisoft_bitacora', JSON.stringify(dbBitacora));
+        }
 
         async function handleLogin(event) {
             event.preventDefault();
@@ -792,7 +802,8 @@
         }
 
         async function sincronizarDatosPostgreSQL() {
-            dbBitacora = [{ usuario: currentUser.nombre, entrada: new Date().toLocaleTimeString(), transacciones: "Conexión exitosa establecida con PostgreSQL Server." }];
+            dbBitacora.unshift({ usuario: currentUser.nombre, entrada: new Date().toLocaleTimeString(), transacciones: "Conexión exitosa establecida con PostgreSQL Server." });
+            guardarEnLocalStorage();
             renderizarEstadisticasDashboard();
         }
 
@@ -852,15 +863,7 @@
             document.getElementById('usr-nombre').value = "";
             document.getElementById('usr-pass').value = "";
             document.getElementById('usr-perfil').value = "Master";
-            
-            // Poblar selector de instancias
-            const selInst = document.getElementById('usr-instancia');
-            selInst.innerHTML = '<option value="Todos" selected>Todos (Control Completo)</option>';
-            dbInstancias.forEach(i => {
-                selInst.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`;
-            });
-            selInst.disabled = true; // Por defecto Master
-
+            verificarPerfilUsuario();
             document.getElementById('modal-crear-usuario').classList.remove('hidden'); 
         }
 
@@ -870,14 +873,18 @@
             
             selInst.innerHTML = '';
             if (perfil === 'Master' || perfil === 'Secretario Ejecutivo' || perfil === 'Secretario General') {
-                selInst.innerHTML = '<option value="Todos" selected>Todos (Control Completo)</option>';
+                selInst.innerHTML = '<option value="Todos" selected>Todos (Control Completo de Instancias y Proyectos)</option>';
                 selInst.disabled = true;
             } else {
                 selInst.disabled = false;
-                selInst.innerHTML = '<option value="" disabled selected>-- Seleccione Instancia --</option>';
-                dbInstancias.forEach(i => {
-                    selInst.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`;
-                });
+                if(dbProyectos.length === 0) {
+                    selInst.innerHTML = '<option value="" disabled selected>-- No hay proyectos activos registrados --</option>';
+                } else {
+                    selInst.innerHTML = '<option value="" disabled selected>-- Seleccione Proyecto Activo --</option>';
+                    dbProyectos.forEach(p => {
+                        selInst.innerHTML += `<option value="${p.nombre} (${p.instancia})">${p.nombre} — Instancia: ${p.instancia}</option>`;
+                    });
+                }
             }
         }
 
@@ -894,6 +901,7 @@
                 instancia: instanciaAsignada
             };
             dbUsuarios.push(nuevoUsr);
+            guardarEnLocalStorage();
             cerrarModalCrearUsuario();
             renderUsuarios();
             alert("¡Usuario registrado con éxito en PostgreSQL!");
@@ -928,7 +936,7 @@
             document.getElementById('modal-crear-proyecto').classList.remove('hidden');
         }
 
-        function actualizarSelectModificarProyecto() {
+        function actualizarSelectModificarproyecto() {
             const sel = document.getElementById('select-modificar-proyecto');
             if(!sel) return;
             sel.innerHTML = '<option value="" disabled selected>-- Seleccionar proyecto a modificar --</option>';
@@ -954,7 +962,6 @@
             document.getElementById('proj-monto').value = p.monto;
             document.getElementById('proj-obj-general').value = p.objetivoGeneral;
             
-            // Clonar objetivos para edición segura en memoria
             objetivosEnCreacion = JSON.parse(JSON.stringify(p.objetivosEspecificos || []));
             renderTablaObjetivosEspecificos();
             document.getElementById('modal-crear-proyecto').classList.remove('hidden');
@@ -1146,9 +1153,10 @@
                 alert("¡Proyecto y su estructura jerárquica registrados con éxito en PostgreSQL!");
             }
 
+            guardarEnLocalStorage();
             cerrarModalCrearProyecto();
             renderProyectos();
-            actualizarSelectModificarProyecto();
+            actualizarSelectModificarproyecto();
             renderizarEstadisticasDashboard();
         }
 
@@ -1215,6 +1223,7 @@
                 monedasExtra: extras
             };
             dbInstancias.push(nuevaInst);
+            guardarEnLocalStorage();
             cerrarModalCrearInstancia();
             renderInstancias();
             alert("¡Instancia guardada exitosamente en PostgreSQL!");
@@ -1301,6 +1310,7 @@
                 doc: "comprobante.pdf"
             };
             dbMovimientosTecnicos.unshift(nuevoReg);
+            guardarEnLocalStorage();
             alert("¡Movimiento registrado con éxito en PostgreSQL!");
             renderGridTecnico();
         }
@@ -1319,9 +1329,30 @@
         }
 
         function initLeafletMap() {
-            if(leafletMap) { leafletMap.invalidateSize(); return; }
-            leafletMap = L.map('leaflet-map').setView([14.6349, -90.5069], 7);
-            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(leafletMap);
+            if(!leafletMap) {
+                leafletMap = L.map('leaflet-map').setView([14.6349, -90.5069], 7);
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(leafletMap);
+            } else {
+                leafletMap.invalidateSize();
+            }
+
+            // Limpiar marcadores previos para evitar duplicados
+            leafletMap.eachLayer(layer => {
+                if (layer instanceof L.Marker) {
+                    leafletMap.removeLayer(layer);
+                }
+            });
+
+            // Localizar y agregar pines GPS de las instancias registradas
+            dbInstancias.forEach(inst => {
+                if(inst.gps) {
+                    const partes = inst.gps.split(',').map(c => parseFloat(c.trim()));
+                    if(partes.length === 2 && !isNaN(partes[0]) && !isNaN(partes[1])) {
+                        L.marker(partes).addTo(leafletMap)
+                            .bindPopup(`<b>${inst.nombre}</b><br>Director: ${inst.director}<br>Dirección: ${inst.direccion}`);
+                    }
+                }
+            });
         }
 
         function inicializarModuloAlisoftia() {
@@ -1360,8 +1391,6 @@
             const visor = document.getElementById('modal-visor-reporte');
             const contenedor = document.getElementById('contenido-reporte-ejecutivo');
             const fechaActual = new Date().toLocaleDateString();
-
-            let esGerencial = (rol === "Master" || rol === "Secretario Ejecutivo" || rol === "Secretario General" || rol === "Director" || rol === "Coordinador");
 
             let htmlObjs = "";
             let htmlInds = "";
