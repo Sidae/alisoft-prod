@@ -1,13 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import HTMLResponse
-from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 from typing import List, Optional
 import os
 
 app = FastAPI(title="ALISOFT v3.5 Pro API")
 
-# Almacenamiento centralizado en el servidor (en memoria o base de datos)
+# Almacenamiento centralizado en el servidor
 db_memoria = {
     "instancias": [],
     "proyectos": [],
@@ -20,10 +19,7 @@ db_memoria = {
     ]
 }
 
-class InstanciaModel(BaseModel.model_config if hasattr(BaseModel, 'model_config') else dict):
-    pass
-
-# Modelos Pydantic para validación de datos
+# Modelos Pydantic corregidos
 class Instancia(BaseModel):
     nombre: str
     director: str
