@@ -183,7 +183,7 @@
                 <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
                     <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 border-t-4 border-t-petroleum">
                         <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Presupuesto Ejecutado</span>
-                        <div class="flex items-end justify-between mt-2"><h3 id="db-stat-presupuesto" class="text-2xl font-black text-slate-900">$0.00</h3></div>
+                        <div class="flex items-end justify-between mt-2"><h3 id="db-stat-presupuesto" class="text-2xl font-black text-slate-900">Q0.00</h3></div>
                     </div>
                     <div class="bg-white p-5 rounded-lg shadow-sm border border-slate-200 border-t-4 border-t-blue-500">
                         <span class="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Proyectos Activos</span>
@@ -290,14 +290,18 @@
 
             <!-- VISTA: PROYECTOS -->
             <main id="app-view-proyectos" class="flex-1 overflow-y-auto p-6 bg-slate-100 hidden flex flex-col">
-                <div class="flex justify-between items-center mb-6">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                     <div>
                         <h2 class="text-xl font-bold text-slate-900">Portafolio Global de Proyectos MEAL (PostgreSQL)</h2>
                         <p class="text-xs text-slate-500 mt-1">Administración de proyectos activos sincronizados en el servidor.</p>
                     </div>
-                    <button onclick="abrirModalCrearProyecto()" class="bg-petroleum hover:bg-blue-900 text-white px-4 py-2 rounded-lg text-xs font-bold shadow-sm flex items-center space-x-1">
-                        <span>+ Nuevo Proyecto</span>
-                    </button>
+                    <div class="flex items-center space-x-2 bg-white p-2 rounded-xl border shadow-sm">
+                        <select id="select-modificar-proyecto" class="text-xs font-semibold border rounded p-1.5 bg-slate-50 outline-none">
+                            <option value="" disabled selected>-- Seleccionar proyecto a modificar --</option>
+                        </select>
+                        <button onclick="cargarProyectoParaModificar()" class="bg-amber-500 hover:bg-amber-600 text-slate-900 px-3 py-1.5 rounded text-xs font-bold transition">Modificar</button>
+                        <button onclick="abrirModalCrearProyecto()" class="bg-petroleum hover:bg-blue-900 text-white px-4 py-1.5 rounded text-xs font-bold shadow-sm">+ Nuevo Proyecto</button>
+                    </div>
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6" id="grid-proyectos"></div>
             </main>
@@ -417,7 +421,7 @@
                 <div class="bg-white rounded-xl shadow-sm border overflow-hidden">
                     <table class="w-full text-left text-sm text-slate-600">
                         <thead class="bg-slate-50 text-xs uppercase font-semibold text-slate-500 border-b">
-                            <tr><th class="px-6 py-4">Nombre</th><th class="px-6 py-4">Perfil</th><th class="px-6 py-4">Instancia</th></tr>
+                            <tr><th class="px-6 py-4">Nombre</th><th class="px-6 py-4">Perfil</th><th class="px-6 py-4">Instancia Asignada</th></tr>
                         </thead>
                         <tbody id="tabla-usuarios-body" class="divide-y"></tbody>
                     </table>
@@ -457,7 +461,7 @@
                 </div>
                 <div>
                     <label class="block font-semibold mb-1">Perfil / Rol Institucional</label>
-                    <select id="usr-perfil" class="w-full border rounded p-2 bg-white font-semibold text-slate-800">
+                    <select id="usr-perfil" onchange="verificarPerfilUsuario()" class="w-full border rounded p-2 bg-white font-semibold text-slate-800">
                         <option value="Master">Master</option>
                         <option value="Secretario Ejecutivo">Secretario Ejecutivo</option>
                         <option value="Director">Director</option>
@@ -467,7 +471,9 @@
                 </div>
                 <div>
                     <label class="block font-semibold mb-1">Instancia Asignada</label>
-                    <input type="text" id="usr-instancia" required placeholder="Ej. Región Central" class="w-full border rounded p-2 bg-white">
+                    <select id="usr-instancia" required class="w-full border rounded p-2 bg-white font-semibold text-slate-800">
+                        <option value="" disabled selected>-- Seleccione Instancia --</option>
+                    </select>
                 </div>
                 <div class="flex justify-end pt-3 border-t">
                     <button type="submit" class="bg-petroleum hover:bg-blue-900 text-white px-5 py-2.5 rounded text-xs font-semibold">Guardar Usuario</button>
@@ -476,11 +482,11 @@
         </div>
     </div>
 
-    <!-- MODAL: CREAR NUEVO PROYECTO (Con Estructura Jerárquica MEAL) -->
+    <!-- MODAL: CREAR/MODIFICAR NUEVO PROYECTO (Con Estructura Jerárquica MEAL) -->
     <div id="modal-crear-proyecto" class="hidden fixed inset-0 bg-slate-900 bg-opacity-80 z-50 flex items-center justify-center p-4 backdrop-blur-sm overflow-y-auto">
         <div class="bg-white rounded-xl shadow-2xl max-w-3xl w-full p-6 border max-h-[90vh] overflow-y-auto">
             <div class="flex justify-between items-center border-b pb-3 mb-4">
-                <h3 class="font-bold text-slate-900 text-sm">Registrar Nuevo Proyecto MEAL y Estructura Lógica (PostgreSQL)</h3>
+                <h3 class="font-bold text-slate-900 text-sm" id="titulo-modal-proyecto">Registrar Nuevo Proyecto MEAL y Estructura Lógica (PostgreSQL)</h3>
                 <button onclick="cerrarModalCrearProyecto()" class="text-slate-400 hover:text-slate-700 font-bold text-lg">&times;</button>
             </div>
             <form onsubmit="guardarNuevoProyecto(event)" class="space-y-4 text-xs">
@@ -498,7 +504,7 @@
                         <input type="text" id="proj-instancia" required placeholder="Ej. Instancia Región Noroccidente" class="w-full border rounded p-2 bg-white">
                     </div>
                     <div>
-                        <label class="block font-semibold mb-1">Presupuesto Asignado ($)</label>
+                        <label class="block font-semibold mb-1">Presupuesto Asignado (Q.)</label>
                         <input type="number" step="0.01" id="proj-monto" required placeholder="50000.00" class="w-full border rounded p-2 bg-white">
                     </div>
                 </div>
@@ -641,7 +647,7 @@
                         <input type="date" id="act-fin" required class="w-full border rounded p-1.5 bg-white">
                     </div>
                     <div class="md:col-span-2">
-                        <label class="block font-semibold mb-1">Costo Estimado ($)</label>
+                        <label class="block font-semibold mb-1">Costo Estimado (Q.)</label>
                         <input type="number" step="0.01" id="act-costo" required placeholder="1500.00" class="w-full border rounded p-1.5 bg-white">
                     </div>
                 </div>
@@ -653,7 +659,7 @@
             <div class="border rounded bg-white overflow-hidden max-h-48 overflow-y-auto">
                 <table class="w-full text-left text-xs">
                     <thead class="bg-slate-100 text-[10px] uppercase font-bold text-slate-500">
-                        <tr><th class="p-2">Código</th><th class="p-2">Actividad</th><th class="p-2">Fechas</th><th class="p-2">Costo ($)</th><th class="p-2 text-center">Acción</th></tr>
+                        <tr><th class="p-2">Código</th><th class="p-2">Actividad</th><th class="p-2">Fechas</th><th class="p-2">Costo (Q.)</th><th class="p-2 text-center">Acción</th></tr>
                     </thead>
                     <tbody id="tabla-actividades-modal" class="divide-y">
                         <tr><td colspan="5" class="p-3 text-center text-slate-400">Sin actividades agregadas.</td></tr>
@@ -714,7 +720,7 @@
                     </div>
                 </div>
                 <div class="border p-3 rounded-lg bg-slate-50">
-                    <div class="mb-3"><label class="block font-bold mb-1">9. Moneda Oficial</label><input type="text" id="inst-moneda-oficial" required placeholder="GTQ (Q)" class="w-full border rounded p-2 bg-white"></div>
+                    <div class="mb-3"><label class="block font-bold mb-1">9. Moneda Oficial</label><input type="text" id="inst-moneda-oficial" required value="GTQ (Q.)" class="w-full border rounded p-2 bg-white"></div>
                     <label class="block font-bold mb-1">Monedas Adicionales (Hasta 4)</label>
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
                         <input type="text" placeholder="USD ($)" class="border rounded p-1.5 bg-white divisa-extra">
@@ -754,11 +760,12 @@
         let currentUser = null;
         let leafletMap = null;
         let tematicasEnCreacion = [];
-        let objetivosEnCreacion = []; // Estructura jerárquica temporal para nuevo proyecto
+        let objetivosEnCreacion = []; // Estructura jerárquica temporal para nuevo/editar proyecto
+        let proyectoEditandoIndex = null; // Controla si se está creando o modificando un proyecto
 
         let dbInstancias = [];
         let dbUsuarios = [
-            { nombre: "J. Raul Martinez M.", perfil: "Master", instancia: "Servidor Principal" }
+            { nombre: "J. Raul Martinez M.", perfil: "Master", instancia: "Todos" }
         ];
         let dbProyectos = [];
         let dbMovimientosTecnicos = [];
@@ -770,9 +777,9 @@
             const pass = document.getElementById('login-pass').value;
 
             if (username === "J. Raul Martinez M." && pass === "Raul2026#") {
-                currentUser = { nombre: "J. Raul Martinez M.", perfil: "Master", instancia: "Servidor Principal" };
+                currentUser = { nombre: "J. Raul Martinez M.", perfil: "Master", instancia: "Todos" };
             } else {
-                currentUser = { nombre: username, perfil: "Master", instancia: "Servidor Principal" };
+                currentUser = { nombre: username, perfil: "Master", instancia: "Todos" };
             }
 
             document.getElementById('header-username').innerText = currentUser.nombre;
@@ -791,7 +798,7 @@
 
         function renderizarEstadisticasDashboard() {
             let totalPresupuesto = dbProyectos.reduce((acc, p) => acc + Number(p.monto), 0);
-            document.getElementById('db-stat-presupuesto').innerText = "$" + totalPresupuesto.toLocaleString(undefined, {minimumFractionDigits: 2});
+            document.getElementById('db-stat-presupuesto').innerText = "Q." + totalPresupuesto.toLocaleString(undefined, {minimumFractionDigits: 2});
             document.getElementById('db-stat-proyectos').innerText = dbProyectos.length;
             document.getElementById('db-stat-cari').innerText = dbProyectos.length > 0 ? "85.4%" : "0.0%";
             document.getElementById('db-stat-alertas').innerText = "0";
@@ -808,7 +815,7 @@
 
             if(vista === 'tecnico') renderGridTecnico();
             if(vista === 'instancias') renderInstancias();
-            if(vista === 'proyectos') renderProyectos();
+            if(vista === 'proyectos') { renderProyectos(); actualizarSelectModificarProyecto(); }
             if(vista === 'linea-base') initLeafletMap();
             if(vista === 'alisoftia') inicializarModuloAlisoftia();
             if(vista === 'usuarios') renderUsuarios();
@@ -825,13 +832,13 @@
                     <div class="flex items-center space-x-2">
                         <div class="w-7 h-7 bg-petroleum text-white rounded flex items-center justify-center font-bold text-xs">AL</div>
                         <div>
-                            <h2 class="text-sm font-black text-slate-900">ALISOFT v3.5 Pro — Reporte Remoto PostgreSQL</h2>
+                            <h2 class="text-sm font-black text-slate-900">ALISOFT v3.5 Pro — Reporte Remoto PostgreSQL (Moneda: Q.)</h2>
                             <p class="text-slate-500 text-[10px]">Vista SQL: vw_${tipo.toLowerCase()}</p>
                         </div>
                     </div>
                     <div class="text-right text-[10px] text-slate-500">Fecha: ${fechaActual}</div>
                 </div>
-                <p class="text-xs text-slate-700">Registros actuales consultados en la base de datos PostgreSQL.</p>
+                <p class="text-xs text-slate-700">Registros actuales consultados en la base de datos PostgreSQL expresados en Quetzales (Q.).</p>
             `;
             visor.classList.remove('hidden');
         }
@@ -844,22 +851,54 @@
         function abrirModalCrearUsuario() { 
             document.getElementById('usr-nombre').value = "";
             document.getElementById('usr-pass').value = "";
-            document.getElementById('usr-instancia').value = "";
+            document.getElementById('usr-perfil').value = "Master";
+            
+            // Poblar selector de instancias
+            const selInst = document.getElementById('usr-instancia');
+            selInst.innerHTML = '<option value="Todos" selected>Todos (Control Completo)</option>';
+            dbInstancias.forEach(i => {
+                selInst.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`;
+            });
+            selInst.disabled = true; // Por defecto Master
+
             document.getElementById('modal-crear-usuario').classList.remove('hidden'); 
         }
+
+        function verificarPerfilUsuario() {
+            const perfil = document.getElementById('usr-perfil').value;
+            const selInst = document.getElementById('usr-instancia');
+            
+            selInst.innerHTML = '';
+            if (perfil === 'Master' || perfil === 'Secretario Ejecutivo' || perfil === 'Secretario General') {
+                selInst.innerHTML = '<option value="Todos" selected>Todos (Control Completo)</option>';
+                selInst.disabled = true;
+            } else {
+                selInst.disabled = false;
+                selInst.innerHTML = '<option value="" disabled selected>-- Seleccione Instancia --</option>';
+                dbInstancias.forEach(i => {
+                    selInst.innerHTML += `<option value="${i.nombre}">${i.nombre}</option>`;
+                });
+            }
+        }
+
         function cerrarModalCrearUsuario() { document.getElementById('modal-crear-usuario').classList.add('hidden'); }
+        
         function guardarNuevoUsuario(e) {
             e.preventDefault();
+            const perfil = document.getElementById('usr-perfil').value;
+            const instanciaAsignada = (perfil === 'Master' || perfil === 'Secretario Ejecutivo' || perfil === 'Secretario General') ? 'Todos' : document.getElementById('usr-instancia').value;
+
             const nuevoUsr = {
                 nombre: document.getElementById('usr-nombre').value,
-                perfil: document.getElementById('usr-perfil').value,
-                instancia: document.getElementById('usr-instancia').value
+                perfil: perfil,
+                instancia: instanciaAsignada
             };
             dbUsuarios.push(nuevoUsr);
             cerrarModalCrearUsuario();
             renderUsuarios();
             alert("¡Usuario registrado con éxito en PostgreSQL!");
         }
+
         function renderUsuarios() {
             const tbody = document.getElementById('tabla-usuarios-body');
             if(dbUsuarios.length === 0) {
@@ -875,9 +914,11 @@
             `).join('');
         }
 
-        // GESTIÓN DE PROYECTOS Y ESTRUCTURA JERÁRQUICA
+        // GESTIÓN DE PROYECTOS Y ESTRUCTURA JERÁRQUICA (CREAR Y MODIFICAR)
         function abrirModalCrearProyecto() {
+            proyectoEditandoIndex = null;
             objetivosEnCreacion = [];
+            document.getElementById('titulo-modal-proyecto').innerText = "Registrar Nuevo Proyecto MEAL y Estructura Lógica (PostgreSQL)";
             document.getElementById('proj-nombre').value = "";
             document.getElementById('proj-tematica').value = "";
             document.getElementById('proj-instancia').value = "";
@@ -886,6 +927,39 @@
             renderTablaObjetivosEspecificos();
             document.getElementById('modal-crear-proyecto').classList.remove('hidden');
         }
+
+        function actualizarSelectModificarProyecto() {
+            const sel = document.getElementById('select-modificar-proyecto');
+            if(!sel) return;
+            sel.innerHTML = '<option value="" disabled selected>-- Seleccionar proyecto a modificar --</option>';
+            dbProyectos.forEach((p, idx) => {
+                sel.innerHTML += `<option value="${idx}">${p.nombre} (${p.instancia})</option>`;
+            });
+        }
+
+        function cargarProyectoParaModificar() {
+            const sel = document.getElementById('select-modificar-proyecto');
+            const idx = sel.value;
+            if(idx === "") {
+                alert("Por favor seleccione un proyecto de la lista desplegable.");
+                return;
+            }
+            proyectoEditandoIndex = parseInt(idx);
+            const p = dbProyectos[proyectoEditandoIndex];
+
+            document.getElementById('titulo-modal-proyecto').innerText = `Modificar Proyecto: ${p.nombre}`;
+            document.getElementById('proj-nombre').value = p.nombre;
+            document.getElementById('proj-tematica').value = p.tematica;
+            document.getElementById('proj-instancia').value = p.instancia;
+            document.getElementById('proj-monto').value = p.monto;
+            document.getElementById('proj-obj-general').value = p.objetivoGeneral;
+            
+            // Clonar objetivos para edición segura en memoria
+            objetivosEnCreacion = JSON.parse(JSON.stringify(p.objetivosEspecificos || []));
+            renderTablaObjetivosEspecificos();
+            document.getElementById('modal-crear-proyecto').classList.remove('hidden');
+        }
+
         function cerrarModalCrearProyecto() { document.getElementById('modal-crear-proyecto').classList.add('hidden'); }
 
         function agregarObjetivoEspecifico() {
@@ -1043,7 +1117,7 @@
                     <td class="p-2 font-bold text-emerald-700">${a.codigo}</td>
                     <td class="p-2 font-medium text-slate-900">${a.nombre} <span class="text-[9px] bg-slate-100 px-1 rounded">${a.tipo}</span></td>
                     <td class="p-2 text-slate-600">Del ${a.inicio} al ${a.fin}</td>
-                    <td class="p-2 font-semibold text-slate-800">$${a.costo.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
+                    <td class="p-2 font-semibold text-slate-800">Q.${a.costo.toLocaleString(undefined, {minimumFractionDigits: 2})}</td>
                     <td class="p-2 text-center"><button type="button" onclick="eliminarActividad(${idx})" class="text-red-500 hover:text-red-700 font-bold text-xs">Eliminar</button></td>
                 </tr>
             `).join('');
@@ -1055,7 +1129,7 @@
                 alert("Debe agregar al menos un objetivo específico y su estructura lógica.");
                 return;
             }
-            const nuevoProj = {
+            const datosProyecto = {
                 nombre: document.getElementById('proj-nombre').value,
                 tematica: document.getElementById('proj-tematica').value,
                 instancia: document.getElementById('proj-instancia').value,
@@ -1063,11 +1137,19 @@
                 objetivoGeneral: document.getElementById('proj-obj-general').value,
                 objetivosEspecificos: [...objetivosEnCreacion]
             };
-            dbProyectos.push(nuevoProj);
+
+            if(proyectoEditandoIndex !== null) {
+                dbProyectos[proyectoEditandoIndex] = datosProyecto;
+                alert("¡Proyecto modificado y actualizado con éxito en PostgreSQL!");
+            } else {
+                dbProyectos.push(datosProyecto);
+                alert("¡Proyecto y su estructura jerárquica registrados con éxito en PostgreSQL!");
+            }
+
             cerrarModalCrearProyecto();
             renderProyectos();
+            actualizarSelectModificarProyecto();
             renderizarEstadisticasDashboard();
-            alert("¡Proyecto y su estructura jerárquica registrados con éxito en PostgreSQL!");
         }
 
         function renderProyectos() {
@@ -1082,7 +1164,7 @@
                         <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded font-bold">${p.tematica}</span>
                         <h3 class="font-bold text-base mt-1 text-slate-900">${p.nombre}</h3>
                         <p class="text-xs text-slate-500 mt-1">Instancia: <strong>${p.instancia}</strong></p>
-                        <p class="text-xs text-slate-500 mt-0.5">Presupuesto: $${p.monto.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
+                        <p class="text-xs text-slate-500 mt-0.5">Presupuesto: Q.${p.monto.toLocaleString(undefined, {minimumFractionDigits: 2})}</p>
                         <p class="text-xs text-slate-600 mt-2 bg-slate-50 p-2 rounded border"><strong>Obj. Gral:</strong> ${p.objetivoGeneral}</p>
                         <p class="text-[10px] text-blue-600 font-semibold mt-1">Objetivos Específicos: ${p.objetivosEspecificos.length} registrados</p>
                     </div>
@@ -1201,7 +1283,7 @@
             const accion = document.getElementById('tec-sel-accion').value;
             const c = document.getElementById('tec-campos-dinamicos');
             if(accion === 'Compra') {
-                c.innerHTML = `<div><label class="block text-xs font-semibold mb-1">Fecha Factura</label><input type="date" required class="w-full text-xs border rounded p-2"></div><div><label class="block text-xs font-semibold mb-1">No. Factura</label><input type="text" required placeholder="A-0012" class="w-full text-xs border rounded p-2"></div><div><label class="block text-xs font-semibold mb-1">Monto</label><input type="number" step="0.01" required placeholder="0.00" class="w-full text-xs border rounded p-2"></div><div><label class="block text-xs font-semibold mb-1">PDF/Img Factura</label><input type="file" required class="w-full text-xs border rounded p-1 bg-slate-50"></div>`;
+                c.innerHTML = `<div><label class="block text-xs font-semibold mb-1">Fecha Factura</label><input type="date" required class="w-full text-xs border rounded p-2"></div><div><label class="block text-xs font-semibold mb-1">No. Factura</label><input type="text" required placeholder="A-0012" class="w-full text-xs border rounded p-2"></div><div><label class="block text-xs font-semibold mb-1">Monto (Q.)</label><input type="number" step="0.01" required placeholder="0.00" class="w-full text-xs border rounded p-2"></div><div><label class="block text-xs font-semibold mb-1">PDF/Img Factura</label><input type="file" required class="w-full text-xs border rounded p-1 bg-slate-50"></div>`;
             } else if(accion === 'Entrega') {
                 c.innerHTML = `<div><label class="block text-xs font-semibold mb-1">Fecha Entrega</label><input type="date" required class="w-full text-xs border rounded p-2"></div><div><label class="block text-xs font-semibold mb-1">Comunidad</label><input type="text" required placeholder="Localidad..." class="w-full text-xs border rounded p-2"></div><div><label class="block text-xs font-semibold mb-1">Planilla</label><input type="file" required class="w-full text-xs border rounded p-1 bg-slate-50"></div><div><label class="block text-xs font-semibold mb-1">Fotos (1-3)</label><input type="file" accept="image/*" multiple required class="w-full text-xs border rounded p-1 bg-slate-50"></div>`;
             } else {
@@ -1279,7 +1361,7 @@
             const contenedor = document.getElementById('contenido-reporte-ejecutivo');
             const fechaActual = new Date().toLocaleDateString();
 
-            let esGerencial = (rol === "Master" || rol === "Secretario Ejecutivo" || rol === "Director" || rol === "Coordinador");
+            let esGerencial = (rol === "Master" || rol === "Secretario Ejecutivo" || rol === "Secretario General" || rol === "Director" || rol === "Coordinador");
 
             let htmlObjs = "";
             let htmlInds = "";
@@ -1332,7 +1414,7 @@
                                 <td class="p-2 font-bold">${act.codigo}</td>
                                 <td class="p-2">${act.nombre} (${act.tipo})</td>
                                 <td class="p-2">${act.inicio} al ${act.fin}</td>
-                                <td class="p-2">$${act.costo.toLocaleString()}</td>
+                                <td class="p-2">Q.${act.costo.toLocaleString()}</td>
                                 <td class="p-2 text-blue-700 font-semibold">En tiempo óptimo</td>
                             </tr>
                         `;
@@ -1344,7 +1426,7 @@
             htmlComps = `
                 <div class="p-3 bg-slate-50 border rounded">
                     <p class="font-bold text-slate-900">Componente analizado: ${p.tematica}</p>
-                    <p class="text-[10px] text-slate-600 mt-1">El componente opera bajo la instancia <strong>${p.instancia}</strong> con un presupuesto asignado de $${p.monto.toLocaleString()}. No se detectan cuellos de botella críticos; la carga de trabajo asignada al equipo técnico es equilibrada y sostenible para alcanzar las metas establecidas dentro del periodo programado.</p>
+                    <p class="text-[10px] text-slate-600 mt-1">El componente opera bajo la instancia <strong>${p.instancia}</strong> con un presupuesto asignado de Q.${p.monto.toLocaleString()}. No se detectan cuellos de botella críticos; la carga de trabajo asignada al equipo técnico es equilibrada y sostenible para alcanzar las metas establecidas dentro del periodo programado.</p>
                 </div>
             `;
 
@@ -1401,7 +1483,7 @@
 
                     <div>
                         <h4 class="font-bold text-slate-900 uppercase text-xs mb-2">4. Cronograma de Actividades y Análisis de Carga de Trabajo</h4>
-                        <p class="text-[10px] text-slate-600 mb-2">Total de actividades: <strong>${totalActividades}</strong> | Costo total programado: <strong>$${costoTotalAct.toLocaleString()}</strong></p>
+                        <p class="text-[10px] text-slate-600 mb-2">Total de actividades: <strong>${totalActividades}</strong> | Costo total programado: <strong>Q.${costoTotalAct.toLocaleString()}</strong></p>
                         <div class="border rounded bg-white overflow-hidden">
                             <table class="w-full text-left text-[10px]">
                                 <thead class="bg-slate-100 uppercase font-bold text-slate-500">
@@ -1472,7 +1554,7 @@
             tbody.innerHTML = dbBitacora.map(b => `<tr class="border-b"><td class="px-5 py-3 font-semibold">${b.usuario}</td><td class="px-5 py-3 text-emerald-600">${b.entrada}</td><td class="px-5 py-3 text-xs font-mono">${b.transacciones}</td></tr>`).join('');
         }
 
-        new Chart(document.getElementById('chartFinanciero').getContext('2d'), { type: 'bar', data: { labels: ['Norteamérica', 'Centroamérica', 'Sudamérica'], datasets: [{ label: 'Ejecución ($)', data: [0, 0, 0], backgroundColor: ['#003366', '#2563eb', '#60a5fa'] }] }, options: { responsive: true, maintainAspectRatio: false } });
+        new Chart(document.getElementById('chartFinanciero').getContext('2d'), { type: 'bar', data: { labels: ['Norteamérica', 'Centroamérica', 'Sudamérica'], datasets: [{ label: 'Ejecución (Q.)', data: [0, 0, 0], backgroundColor: ['#003366', '#2563eb', '#60a5fa'] }] }, options: { responsive: true, maintainAspectRatio: false } });
         new Chart(document.getElementById('chartFisico').getContext('2d'), { type: 'line', data: { labels: ['Q1', 'Q2', 'Q3 (Prog)', 'Q3 (Ejec)'], datasets: [{ label: 'Avance Global (%)', data: [0, 0, 0, 0], borderColor: '#2563eb', fill: true, backgroundColor: 'rgba(37,99,235,0.1)' }] }, options: { responsive: true, maintainAspectRatio: false } });
     </script>
 </body>
