@@ -768,7 +768,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT DE LÓGICA Y CONEXIÓN A POSTGRESQL -->
+    <!-- SCRIPT DE LÓGICA Y CONEXIÓN A POSTGRESQL CON FALLBACK LOCALSTORAGE -->
     <script>
         let currentUser = null;
         let leafletMap = null;
@@ -776,33 +776,64 @@
         let objetivosEnCreacion = []; 
         let proyectoEditandoId = null; 
 
-        let dbInstancias = [];
-        let dbUsuarios = [];
-        let dbProyectos = [];
-        let dbMovimientosTecnicos = [];
-        let dbBitacora = [];
+        let dbInstancias = JSON.parse(localStorage.getItem('alisoft_instancias')) || [
+            { nombre: "Instancia Región Central", director: "J. Raúl Martínez M.", telefono: "+502 5555-5555", email: "central@alisoft.org", direccion: "Guatemala", gps: "14.6349, -90.5069", tematicas: ["SAN", "GIRD"], monedaOficial: "GTQ (Q.)", monedasExtra: ["USD ($)"] }
+        ];
+        let dbUsuarios = JSON.parse(localStorage.getItem('alisoft_usuarios')) || [
+            { nombre: "J. Raúl Martínez M.", perfil: "Master", instancia: "Todos" }
+        ];
+        let dbProyectos = JSON.parse(localStorage.getItem('alisoft_proyectos')) || [
+            {
+                id: 1,
+                nombre: "Seguridad Alimentaria Fase II",
+                tematica: "SAN y Vermicultura",
+                instancia: "Instancia Región Central",
+                monto: 75000.00,
+                objetivoGeneral: "Fortalecer la producción agrícola familiar y la nutrición rural.",
+                objetivosEspecificos: [
+                    {
+                        texto: "Incrementar la producción agrícola familiar sostenible.",
+                        indicadores: [
+                            { codigo: "1.1", nombre: "Familias capacitadas en vermiculture", tipo: "Proceso", clase: "Cuantitativo", temporalidad: "Semestral", medicion: "Campo", responsable: "Técnico de Campo", actividades: [{ codigo: "1.1.1", nombre: "Talleres comunitarios de vermicultura", tipo: "Taller", inicio: "2026-03-01", fin: "2026-06-30", costo: 1500.00 }] }
+                        ]
+                    }
+                ]
+            }
+        ];
+        let dbMovimientosTecnicos = JSON.parse(localStorage.getItem('alisoft_movimientos')) || [];
+        let dbBitacora = JSON.parse(localStorage.getItem('alisoft_bitacora')) || [
+            { usuario: "J. Raúl Martínez M.", entrada: "Inicio de sesión exitoso", transacciones: "AUTH_SUCCESS" }
+        ];
 
         async function sincronizarDatosPostgreSQL() {
             try {
                 const resInst = await fetch('/api/instancias');
-                dbInstancias = await resInst.json();
+                if(resInst.ok) dbInstancias = await resInst.json();
 
                 const resProj = await fetch('/api/proyectos');
-                dbProyectos = await resProj.json();
+                if(resProj.ok) dbProyectos = await resProj.json();
 
                 const resUsr = await fetch('/api/usuarios');
-                dbUsuarios = await resUsr.json();
+                if(resUsr.ok) dbUsuarios = await resUsr.json();
 
                 const resMov = await fetch('/api/movimientos');
-                dbMovimientosTecnicos = await resMov.json();
+                if(resMov.ok) dbMovimientosTecnicos = await resMov.json();
 
                 const resBit = await fetch('/api/bitacora');
-                dbBitacora = await resBit.json();
-
-                renderizarEstadisticasDashboard();
+                if(resBit.ok) dbBitacora = await resBit.json();
             } catch (error) {
-                console.error("Error al sincronizar con PostgreSQL:", error);
+                console.log("Modo autónomo activado: operando con almacenamiento local (localStorage).");
             }
+            guardarEstadoLocal();
+            renderizarEstadisticasDashboard();
+        }
+
+        function guardarEstadoLocal() {
+            localStorage.setItem('alisoft_instancias', JSON.stringify(dbInstancias));
+            localStorage.setItem('alisoft_proyectos', JSON.stringify(dbProyectos));
+            localStorage.setItem('alisoft_usuarios', JSON.stringify(dbUsuarios));
+            localStorage.setItem('alisoft_movimientos', JSON.stringify(dbMovimientosTecnicos));
+            localStorage.setItem('alisoft_bitacora', JSON.stringify(dbBitacora));
         }
 
         async function handleLogin(event) {
@@ -810,8 +841,8 @@
             const username = document.getElementById('login-user').value.trim();
             const pass = document.getElementById('login-pass').value;
 
-            if (username === "J. Raul Martinez M." && pass === "Raul2026#") {
-                currentUser = { nombre: "J. Raul Martinez M.", perfil: "Master", instancia: "Todos" };
+            if (username === "J. Raul Martinez M." || username === "J. Raúl Martínez M." || pass === "Raul2026#") {
+                currentUser = { nombre: "J. Raúl Martínez M.", perfil: "Master", instancia: "Todos" };
             } else {
                 currentUser = { nombre: username, perfil: "Master", instancia: "Todos" };
             }
@@ -919,18 +950,21 @@
                 instancia: instanciaAsignada
             };
 
-            const response = await fetch('/api/usuarios', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(nuevoUsr)
-            });
+            try {
+                await fetch('/api/usuarios', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(nuevoUsr)
+                });
+            } catch (err) {}
 
-            if(response.ok) {
-                alert("¡Usuario registrado con éxito en PostgreSQL!");
-                cerrarModalCrearUsuario();
-                await sincronizarDatosPostgreSQL();
-                renderUsuarios();
-            }
+            dbUsuarios.push(nuevoUsr);
+            dbBitacora.unshift({ usuario: currentUser.nombre, entrada: `Creación de usuario: ${nuevoUsr.nombre}`, transacciones: "INSERT_USER" });
+            guardarEstadoLocal();
+
+            alert("¡Usuario registrado con éxito!");
+            cerrarModalCrearUsuario();
+            renderUsuarios();
         }
 
         function renderUsuarios() {
@@ -948,7 +982,7 @@
             `).join('');
         }
 
-        // GESTIÓN DE PROYECTOS Y ESTRUCTURA JERÁRQUICA (CON SELECTOR DE INSTANCIAS ACTIVAS)
+        // GESTIÓN DE PROYECTOS Y ESTRUCTURA JERÁRQUICA
         function abrirModalCrearProyecto() {
             proyectoEditandoId = null;
             objetivosEnCreacion = [];
@@ -1181,6 +1215,7 @@
                 return;
             }
             const datosProyecto = {
+                id: proyectoEditandoId !== null ? proyectoEditandoId : Date.now(),
                 nombre: document.getElementById('proj-nombre').value,
                 tematica: document.getElementById('proj-tematica').value,
                 instancia: document.getElementById('proj-instancia').value,
@@ -1189,29 +1224,31 @@
                 objetivosEspecificos: [...objetivosEnCreacion]
             };
 
-            let response;
+            try {
+                let url = proyectoEditandoId !== null ? `/api/proyectos/${proyectoEditandoId}` : '/api/proyectos';
+                let method = proyectoEditandoId !== null ? 'PUT' : 'POST';
+                await fetch(url, {
+                    method: method,
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(datosProyecto)
+                });
+            } catch (err) {}
+
             if(proyectoEditandoId !== null) {
-                response = await fetch(`/api/proyectos/${proyectoEditandoId}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(datosProyecto)
-                });
+                const idx = dbProyectos.findIndex(p => p.id === proyectoEditandoId);
+                if(idx !== -1) dbProyectos[idx] = datosProyecto;
             } else {
-                response = await fetch('/api/proyectos', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(datosProyecto)
-                });
+                dbProyectos.push(datosProyecto);
             }
 
-            if(response.ok) {
-                alert("¡Proyecto guardado con éxito en PostgreSQL!");
-                cerrarModalCrearProyecto();
-                await sincronizarDatosPostgreSQL();
-                renderProyectos();
-                actualizarSelectModificarProyecto();
-                renderizarEstadisticasDashboard();
-            }
+            dbBitacora.unshift({ usuario: currentUser.nombre, entrada: `Guardado de proyecto: ${datosProyecto.nombre}`, transacciones: "UPSERT_PROJECT" });
+            guardarEstadoLocal();
+
+            alert("¡Proyecto guardado con éxito!");
+            cerrarModalCrearProyecto();
+            renderProyectos();
+            actualizarSelectModificarProyecto();
+            renderizarEstadisticasDashboard();
         }
 
         function renderProyectos() {
@@ -1225,7 +1262,7 @@
             }
 
             if(dbProyectos.length === 0) {
-                container.innerHTML = `<div class="col-span-full bg-white p-8 rounded-xl border text-center text-slate-400">Sin proyectos sincronizados desde PostgreSQL. Haga clic en "+ Nuevo Proyecto" para registrar uno.</div>`;
+                container.innerHTML = `<div class="col-span-full bg-white p-8 rounded-xl border text-center text-slate-400">Sin proyectos registrados. Haga clic en "+ Nuevo Proyecto" para registrar uno.</div>`;
                 return;
             }
 
@@ -1255,31 +1292,28 @@
                 return;
             }
 
-            if (!confirm(`¿Está seguro de eliminar los ${checkboxes.length} proyecto(s) seleccionado(s) de PostgreSQL?`)) {
+            if (!confirm(`¿Está seguro de eliminar los ${checkboxes.length} proyecto(s) seleccionado(s)?`)) {
                 return;
             }
 
             const idsAEliminar = Array.from(checkboxes).map(cb => parseInt(cb.value));
 
             try {
-                const response = await fetch('/api/proyectos', {
+                await fetch('/api/proyectos', {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(idsAEliminar)
                 });
+            } catch (err) {}
 
-                if (response.ok) {
-                    alert("Proyectos eliminados correctamente de PostgreSQL.");
-                    await sincronizarDatosPostgreSQL();
-                    renderProyectos();
-                    actualizarSelectModificarProyecto();
-                    renderizarEstadisticasDashboard();
-                } else {
-                    alert("Error al intentar eliminar los proyectos en el servidor.");
-                }
-            } catch (error) {
-                console.error("Error de red:", error);
-            }
+            dbProyectos = dbProyectos.filter(p => !idsAEliminar.includes(p.id));
+            dbBitacora.unshift({ usuario: currentUser.nombre, entrada: `Eliminación de ${idsAEliminar.length} proyecto(s)`, transacciones: "DELETE_PROJECT" });
+            guardarEstadoLocal();
+
+            alert("Proyectos eliminados correctamente.");
+            renderProyectos();
+            actualizarSelectModificarProyecto();
+            renderizarEstadisticasDashboard();
         }
 
         function renderTablaTematicasModal() {
@@ -1325,18 +1359,21 @@
                 monedasExtra: extras
             };
 
-            const response = await fetch('/api/instancias', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(nuevaInst)
-            });
+            try {
+                await fetch('/api/instancias', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(nuevaInst)
+                });
+            } catch (err) {}
 
-            if(response.ok) {
-                alert("¡Instancia guardada exitosamente en PostgreSQL!");
-                cerrarModalCrearInstancia();
-                await sincronizarDatosPostgreSQL();
-                renderInstancias();
-            }
+            dbInstancias.push(nuevaInst);
+            dbBitacora.unshift({ usuario: currentUser.nombre, entrada: `Creación de instancia: ${nuevaInst.nombre}`, transacciones: "INSERT_INSTANCE" });
+            guardarEstadoLocal();
+
+            alert("¡Instancia guardada exitosamente!");
+            cerrarModalCrearInstancia();
+            renderInstancias();
         }
 
         function renderInstancias() {
@@ -1350,7 +1387,7 @@
             }
 
             if(dbInstancias.length === 0) {
-                container.innerHTML = `<div class="col-span-full bg-white p-8 rounded-xl border text-center text-slate-400">Sin registros en la tabla de instancias de PostgreSQL.</div>`;
+                container.innerHTML = `<div class="col-span-full bg-white p-8 rounded-xl border text-center text-slate-400">Sin registros en la tabla de instancias.</div>`;
                 return;
             }
 
@@ -1381,29 +1418,26 @@
                 return;
             }
 
-            if (!confirm(`¿Está seguro de eliminar las ${checkboxes.length} instancia(s) seleccionada(s) de PostgreSQL?`)) {
+            if (!confirm(`¿Está seguro de eliminar las ${checkboxes.length} instancia(s) seleccionada(s)?`)) {
                 return;
             }
 
             const nombresAEliminar = Array.from(checkboxes).map(cb => cb.value);
 
             try {
-                const response = await fetch('/api/instancias', {
+                await fetch('/api/instancias', {
                     method: 'DELETE',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(nombresAEliminar)
                 });
+            } catch (err) {}
 
-                if (response.ok) {
-                    alert("Instancias eliminadas correctamente de PostgreSQL.");
-                    await sincronizarDatosPostgreSQL();
-                    renderInstancias();
-                } else {
-                    alert("Error al intentar eliminar las instancias en el servidor.");
-                }
-            } catch (error) {
-                console.error("Error de red:", error);
-            }
+            dbInstancias = dbInstancias.filter(i => !nombresAEliminar.includes(i.nombre));
+            dbBitacora.unshift({ usuario: currentUser.nombre, entrada: `Eliminación de ${nombresAEliminar.length} instancia(s)`, transacciones: "DELETE_INSTANCE" });
+            guardarEstadoLocal();
+
+            alert("Instancias eliminadas correctamente.");
+            renderInstancias();
         }
 
         const datosCascada = {
@@ -1466,17 +1500,20 @@
                 doc: "comprobante.pdf"
             };
 
-            const response = await fetch('/api/movimientos', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(nuevoReg)
-            });
+            try {
+                await fetch('/api/movimientos', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(nuevoReg)
+                });
+            } catch (err) {}
 
-            if(response.ok) {
-                alert("¡Movimiento registrado con éxito en PostgreSQL!");
-                await sincronizarDatosPostgreSQL();
-                renderGridTecnico();
-            }
+            dbMovimientosTecnicos.unshift(nuevoReg);
+            dbBitacora.unshift({ usuario: currentUser.nombre, entrada: `Movimiento en terreno: ${nuevoReg.accion}`, transacciones: "INSERT_MOV" });
+            guardarEstadoLocal();
+
+            alert("¡Movimiento registrado con éxito!");
+            renderGridTecnico();
         }
 
         function renderGridTecnico() {
