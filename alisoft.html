@@ -6,7 +6,7 @@
     <title>ALISOFT - Sistema Integrado MEAL & PostgreSQL Cloud</title>
     <!-- PWA & Mobile Optimization -->
     <link rel="manifest" href="/manifest.json">
-    <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%23003366'/><text x='50%' y='52%' dominant-baseline='middle' text-anchor='middle' font-family='Inter, Arial, sans-serif' font-weight='900' font-size='220' fill='%23ffffff'>AL</text></svg>">
+    <link rel="apple-touch-icon" href="/icon.svg">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
@@ -834,7 +834,6 @@
             { usuario: "J. Raúl Martínez M.", entrada: "Inicio de sesión exitoso", transacciones: "AUTH_SUCCESS" }
         ];
 
-        // Función para aplicar restricción en dispositivos móviles (Android / iOS smartphones y tablets pequeñas < 768px)
         function aplicarRestriccionMovil() {
             if (window.innerWidth < 768) {
                 const modulosAOcultar = ['tecnico', 'instancias', 'proyectos', 'linea-base', 'alisoftia', 'usuarios', 'bitacora'];
@@ -953,7 +952,6 @@
             document.getElementById('modal-visor-reporte').classList.add('hidden');
         }
 
-        // GESTIÓN DE USUARIOS
         function abrirModalCrearUsuario() { 
             document.getElementById('usr-nombre').value = "";
             document.getElementById('usr-pass').value = "";
@@ -1028,7 +1026,6 @@
             `).join('');
         }
 
-        // GESTIÓN DE PROYECTOS Y ESTRUCTURA JERÁRQUICA
         function abrirModalCrearProyecto() {
             proyectoEditandoId = null;
             objetivosEnCreacion = [];
@@ -1486,7 +1483,6 @@
             renderInstancias();
         }
 
-        // LÓGICA DE SELECTORES DINÁMICOS EN MÓDULO TÉCNICO VINCULADOS A PROYECTOS ACTIVOS
         function poblarSelectorProyectosTecnico() {
             const selProj = document.getElementById('tec-sel-proyecto');
             if(!selProj) return;
