@@ -967,12 +967,10 @@
             const selectInst = document.getElementById('proj-instancia');
             selectInst.innerHTML = '<option value="" disabled selected>-- Seleccione Instancia o Proyecto Activo --</option>';
             
-            // Cargar desde las instancias registradas para evitar diferencias de escritura
             dbInstancias.forEach(i => {
                 selectInst.innerHTML += `<option value="${i.nombre}">Instancia: ${i.nombre}</option>`;
             });
 
-            // Opcional: permitir también reutilizar proyectos activos existentes como referencia
             dbProyectos.forEach(p => {
                 if(!dbInstancias.some(i => i.nombre === p.instancia)) {
                     selectInst.innerHTML += `<option value="${p.instancia}">Proyecto/Instancia: ${p.instancia}</option>`;
@@ -1048,7 +1046,6 @@
             `).join('');
         }
 
-        // LÓGICA DE MODAL DE INDICADORES (HIJO)
         let objEspecificoActivoIndex = null;
 
         function abrirModalIndicadores(objIdx) {
@@ -1110,7 +1107,6 @@
             `).join('');
         }
 
-        // LÓGICA DE MODAL DE ACTIVIDADES (NIETO)
         let indicadorActivoIndex = null;
 
         function abrirModalActividades(objIdx, indIdx) {
@@ -1752,7 +1748,7 @@
         }
 
         new Chart(document.getElementById('chartFinanciero').getContext('2d'), { type: 'bar', data: { labels: ['Norteamérica', 'Centroamérica', 'Sudamérica'], datasets: [{ label: 'Ejecución (Q.)', data: [0, 0, 0], backgroundColor: ['#003366', '#2563eb', '#60a5fa'] }] }, options: { responsive: true, maintainAspectRatio: false } });
-        new Chart(document.getElementById('chartFisico').getContext('2d'), { type: 'line', data: { labels: ['Q1', 'Q2', 'Q3 (Prog)', 'Q3 (Ejec)'], datasets: [{ label: 'Avance Global (%)', data: [0, 0, 0, 0], borderColor: '#2563eb', fill: true, backgroundColor: 'rgba(37,99,235,0.1)' }] }, options: { responsive: true, maintainAspectRatio: false } });
+        new Chart(document.getElementById('chartFisico').getContext('2d'), { type: 'line', data: { labels: ['Q1', 'Q2', 'Q3 (Prog)', 'Q3 (Ejec)'], datasets: [{ label: 'Avance Global (%)', data: [0, 0, 0, 0], borderColor: '#2563eb', fill: true, backgroundColor: 'rgba(37,99,235,0.1)'] }] }, options: { responsive: true, maintainAspectRatio: false } });
     </script>
 </body>
 </html>
