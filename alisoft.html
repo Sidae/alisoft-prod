@@ -216,25 +216,29 @@
                     <h2 class="text-xl font-bold text-slate-900">Módulo de Actualización y Registro en Terreno</h2>
                     <p class="text-xs text-slate-500 mt-1">Conectado a tablas remotas para inserción directa en PostgreSQL.</p>
                 </div>
-                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">1. Componente</label>
-                        <select id="tec-sel-componente" onchange="cargarIndicadoresTecnico()" class="w-full text-xs font-semibold border rounded p-2 bg-slate-50 outline-none">
-                            <option value="" disabled selected>-- Seleccione Componente --</option>
-                            <option value="Comp1">Componente 1: SAN y Vermicultura</option>
-                            <option value="Comp2">Componente 2: Mitigación GIRD</option>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">1. Proyecto Activo</label>
+                        <select id="tec-sel-proyecto" onchange="cargarComponentesTecnico()" class="w-full text-xs font-semibold border rounded p-2 bg-slate-50 outline-none">
+                            <option value="" disabled selected>-- Seleccione Proyecto --</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">2. Indicador</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">2. Componente / Objetivo</label>
+                        <select id="tec-sel-componente" onchange="cargarIndicadoresTecnico()" disabled class="w-full text-xs font-semibold border rounded p-2 bg-slate-50 outline-none">
+                            <option value="" disabled selected>-- Seleccione Proyecto --</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">3. Indicador</label>
                         <select id="tec-sel-indicador" onchange="cargarActividadesTecnico()" disabled class="w-full text-xs font-semibold border rounded p-2 bg-slate-50 outline-none">
-                            <option value="" disabled selected>-- Seleccione componente --</option>
+                            <option value="" disabled selected>-- Seleccione Componente --</option>
                         </select>
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 mb-1">3. Actividad</label>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">4. Actividad</label>
                         <select id="tec-sel-actividad" onchange="activarFormularioAccion()" disabled class="w-full text-xs font-semibold border rounded p-2 bg-slate-50 outline-none">
-                            <option value="" disabled selected>-- Seleccione indicador --</option>
+                            <option value="" disabled selected>-- Seleccione Indicador --</option>
                         </select>
                     </div>
                 </div>
@@ -794,7 +798,7 @@
                     {
                         texto: "Incrementar la producción agrícola familiar sostenible.",
                         indicadores: [
-                            { codigo: "1.1", nombre: "Familias capacitadas en vermiculture", tipo: "Proceso", clase: "Cuantitativo", temporalidad: "Semestral", medicion: "Campo", responsable: "Técnico de Campo", actividades: [{ codigo: "1.1.1", nombre: "Talleres comunitarios de vermicultura", tipo: "Taller", inicio: "2026-03-01", fin: "2026-06-30", costo: 1500.00 }] }
+                            { codigo: "1.1", nombre: "Familias capacitadas en vermicultura", tipo: "Proceso", clase: "Cuantitativo", temporalidad: "Semestral", medicion: "Campo", responsable: "Técnico de Campo", actividades: [{ codigo: "1.1.1", nombre: "Talleres comunitarios de vermicultura", tipo: "Taller", inicio: "2026-03-01", fin: "2026-06-30", costo: 1500.00 }] }
                         ]
                     }
                 ]
@@ -873,7 +877,7 @@
             });
             document.getElementById(`app-view-${vista}`).classList.remove('hidden');
 
-            if(vista === 'tecnico') renderGridTecnico();
+            if(vista === 'tecnico') { renderGridTecnico(); poblarSelectorProyectosTecnico(); }
             if(vista === 'instancias') renderInstancias();
             if(vista === 'proyectos') { renderProyectos(); actualizarSelectModificarProyecto(); }
             if(vista === 'linea-base') initLeafletMap();
@@ -1440,40 +1444,93 @@
             renderInstancias();
         }
 
-        const datosCascada = {
-            "Comp1": { indicadores: { "Ind1": { nombre: "Indicador SAN Base PostgreSQL", actividades: ["Registro Terreno 1"] } } },
-            "Comp2": { indicadores: { "Ind2": { nombre: "Indicador GIRD Base PostgreSQL", actividades: ["Registro Terreno 2"] } } }
-        };
+        // LÓGICA DE SELECTORES DINÁMICOS EN MÓDULO TÉCNICO VINCULADOS A PROYECTOS ACTIVOS
+        function poblarSelectorProyectosTecnico() {
+            const selProj = document.getElementById('tec-sel-proyecto');
+            if(!selProj) return;
+            selProj.innerHTML = '<option value="" disabled selected>-- Seleccione Proyecto --</option>';
+            dbProyectos.forEach(p => {
+                selProj.innerHTML += `<option value="${p.id}">${p.nombre} (${p.tematica})</option>`;
+            });
+            // Resetear dependientes
+            document.getElementById('tec-sel-componente').innerHTML = '<option value="" disabled selected>-- Seleccione Proyecto --</option>';
+            document.getElementById('tec-sel-componente').disabled = true;
+            document.getElementById('tec-sel-indicador').innerHTML = '<option value="" disabled selected>-- Seleccione Componente --</option>';
+            document.getElementById('tec-sel-indicador').disabled = true;
+            document.getElementById('tec-sel-actividad').innerHTML = '<option value="" disabled selected>-- Seleccione Indicador --</option>';
+            document.getElementById('tec-sel-actividad').disabled = true;
+            document.getElementById('tec-container-formulario').classList.add('hidden');
+        }
+
+        function cargarComponentesTecnico() {
+            const projId = document.getElementById('tec-sel-proyecto').value;
+            const compSelect = document.getElementById('tec-sel-componente');
+            const indSelect = document.getElementById('tec-sel-indicador');
+            const actSelect = document.getElementById('tec-sel-actividad');
+
+            compSelect.innerHTML = '<option value="" disabled selected>-- Seleccione Objetivo / Componente --</option>';
+            compSelect.disabled = false;
+
+            indSelect.innerHTML = '<option value="" disabled selected>-- Seleccione Componente --</option>';
+            indSelect.disabled = true;
+
+            actSelect.innerHTML = '<option value="" disabled selected>-- Seleccione Indicador --</option>';
+            actSelect.disabled = true;
+            document.getElementById('tec-container-formulario').classList.add('hidden');
+
+            const proyecto = dbProyectos.find(p => p.id == projId);
+            if(proyecto && proyecto.objetivosEspecificos) {
+                proyecto.objetivosEspecificos.forEach((obj, idx) => {
+                    compSelect.innerHTML += `<option value="${idx}">Obj. ${idx + 1}: ${obj.texto}</option>`;
+                });
+            }
+        }
 
         function cargarIndicadoresTecnico() {
-            const compId = document.getElementById('tec-sel-componente').value;
+            const projId = document.getElementById('tec-sel-proyecto').value;
+            const objIdx = document.getElementById('tec-sel-componente').value;
             const indSelect = document.getElementById('tec-sel-indicador');
+            const actSelect = document.getElementById('tec-sel-actividad');
+
             indSelect.innerHTML = '<option value="" disabled selected>-- Seleccione Indicador --</option>';
             indSelect.disabled = false;
+
+            actSelect.innerHTML = '<option value="" disabled selected>-- Seleccione Indicador --</option>';
+            actSelect.disabled = true;
             document.getElementById('tec-container-formulario').classList.add('hidden');
-            if(datosCascada[compId]) {
-                for(let k in datosCascada[compId].indicadores) {
-                    indSelect.innerHTML += `<option value="${k}">${datosCascada[compId].indicadores[k].nombre}</option>`;
-                }
+
+            const proyecto = dbProyectos.find(p => p.id == projId);
+            if(proyecto && proyecto.objetivosEspecificos[objIdx]) {
+                const indicadores = proyecto.objetivosEspecificos[objIdx].indicadores || [];
+                indicadores.forEach((ind, idx) => {
+                    indSelect.innerHTML += `<option value="${idx}">[${ind.codigo}] ${ind.nombre}</option>`;
+                });
             }
         }
 
         function cargarActividadesTecnico() {
-            const compId = document.getElementById('tec-sel-componente').value;
-            const indId = document.getElementById('tec-sel-indicador').value;
+            const projId = document.getElementById('tec-sel-proyecto').value;
+            const objIdx = document.getElementById('tec-sel-componente').value;
+            const indIdx = document.getElementById('tec-sel-indicador').value;
             const actSelect = document.getElementById('tec-sel-actividad');
+
             actSelect.innerHTML = '<option value="" disabled selected>-- Seleccione Actividad --</option>';
             actSelect.disabled = false;
             document.getElementById('tec-container-formulario').classList.add('hidden');
-            if(datosCascada[compId]?.indicadores[indId]) {
-                datosCascada[compId].indicadores[indId].actividades.forEach(a => {
-                    actSelect.innerHTML += `<option value="${a}">${a}</option>`;
+
+            const proyecto = dbProyectos.find(p => p.id == projId);
+            if(proyecto && proyecto.objetivosEspecificos[objIdx] && proyecto.objetivosEspecificos[objIdx].indicadores[indIdx]) {
+                const actividades = proyecto.objetivosEspecificos[objIdx].indicadores[indIdx].actividades || [];
+                actividades.forEach((act, idx) => {
+                    actSelect.innerHTML += `<option value="${act.nombre}">[${act.codigo}] ${act.nombre}</option>`;
                 });
             }
         }
 
         function activarFormularioAccion() {
-            document.getElementById('tec-label-actividad-activa').innerText = `Actividad: ${document.getElementById('tec-sel-actividad').value}`;
+            const actVal = document.getElementById('tec-sel-actividad').value;
+            if(!actVal) return;
+            document.getElementById('tec-label-actividad-activa').innerText = `Actividad: ${actVal}`;
             document.getElementById('tec-container-formulario').classList.remove('hidden');
             cambiarCamposAccion();
         }
@@ -1492,11 +1549,12 @@
 
         async function guardarRegistroTecnico(e) {
             e.preventDefault();
+            const projNombre = document.getElementById('tec-sel-proyecto').options[document.getElementById('tec-sel-proyecto').selectedIndex].text;
             const nuevoReg = {
                 fecha: new Date().toISOString().split('T')[0],
                 actividad: document.getElementById('tec-sel-actividad').value,
                 accion: document.getElementById('tec-sel-accion').value,
-                detalle: `Registrado por ${currentUser.nombre} en PostgreSQL`,
+                detalle: `Proyecto: ${projNombre} — Registrado por ${currentUser.nombre}`,
                 doc: "comprobante.pdf"
             };
 
