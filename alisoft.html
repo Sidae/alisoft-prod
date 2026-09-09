@@ -4,6 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ALISOFT - Sistema Integrado MEAL & PostgreSQL Cloud</title>
+    <!-- PWA & Mobile Optimization -->
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'><rect width='512' height='512' rx='100' fill='%23003366'/><text x='50%' y='52%' dominant-baseline='middle' text-anchor='middle' font-family='Inter, Arial, sans-serif' font-weight='900' font-size='220' fill='%23ffffff'>AL</text></svg>">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="ALISOFT">
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <script src="https://cdn.tailwindcss.com"></script>
@@ -829,7 +837,6 @@
         // Función para aplicar restricción en dispositivos móviles (Android / iOS smartphones y tablets pequeñas < 768px)
         function aplicarRestriccionMovil() {
             if (window.innerWidth < 768) {
-                // Ocultar módulos avanzados en el menú lateral y dejar exclusivamente Dashboard y Reportes Ejecutivos
                 const modulosAOcultar = ['tecnico', 'instancias', 'proyectos', 'linea-base', 'alisoftia', 'usuarios', 'bitacora'];
                 modulosAOcultar.forEach(mod => {
                     const wrap = document.getElementById(`menu-wrap-${mod}`);
@@ -901,7 +908,6 @@
         function logout() { location.reload(); }
 
         function cambiarVista(vista) {
-            // Validación adicional por seguridad si es móvil y se intenta acceder a vistas no permitidas
             if (window.innerWidth < 768 && vista !== 'dashboard' && vista !== 'reportes') {
                 alert("En dispositivos móviles, el sistema está optimizado exclusivamente para el Dashboard y los Informes Ejecutivos.");
                 vista = 'dashboard';
@@ -1630,14 +1636,12 @@
                 leafletMap.invalidateSize();
             }
 
-            // Limpiar marcadores previos
             leafletMap.eachLayer(layer => {
                 if (layer instanceof L.Marker) {
                     leafletMap.removeLayer(layer);
                 }
             });
 
-            // Recorrer e insertar pines de todas las instancias en el mapa
             dbInstancias.forEach(inst => {
                 if(inst.gps) {
                     const partes = inst.gps.split(',').map(c => parseFloat(c.trim()));
@@ -1646,7 +1650,6 @@
                         
                         marker.bindPopup(`<b>${inst.nombre}</b><br>Director: ${inst.director}<br>Dirección: ${inst.direccion}`);
                         
-                        // Evento al hacer clic en el marcador para mostrar la ficha en el panel lateral
                         marker.on('click', () => {
                             const ficha = document.getElementById('gis-ficha-lateral');
                             ficha.innerHTML = `
